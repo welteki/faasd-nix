@@ -1,0 +1,38 @@
+{
+  "nodes": {
+    "faasd-src": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-pr0gJ5K83P0EbGkju9XoCNKwkDRN9ZB1xkNJReEj38U=",
+        "type": "tarball",
+        "url": "https://github.com/openfaas/faasd/archive/refs/tags/0.11.4.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://github.com/openfaas/faasd/archive/refs/tags/0.11.4.tar.gz"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1624006560,
+        "narHash": "sha256-F+25i/Wjspq3qHIyt7bxRetouGjSqZR9s6M/ZBsEmUo=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "dadf0cdf3889f939f3acc354086751597f55d674",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "type": "indirect"
+      }
+    },
+    "root": {
+      "inputs": {
+        "faasd-src": "faasd-src",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
