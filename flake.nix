@@ -2,6 +2,7 @@
   description = "A lightweight & portable faas engine";
 
   inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-21.05";
     faasd-src = {
       url = "https://github.com/openfaas/faasd/archive/refs/tags/0.11.4.tar.gz";
       flake = false;
