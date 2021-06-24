@@ -25,8 +25,7 @@ in
     # TODO: disable this once containerd version used by faasd supports cgroupsv2.
     systemd.enableUnifiedCgroupHierarchy = false;
 
-    # TODO: reanable firewall -> temp disabled to prevent tcp dial timeout on bridge network.
-    networking.firewall.enable = false;
+    networking.firewall.trustedInterfaces = [ "openfaas0" ];
 
     boot.kernel.sysctl = {
       "net.ipv4.conf.all.forwarding" = 1;
