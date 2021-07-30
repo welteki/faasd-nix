@@ -12,6 +12,22 @@
         "url": "https://github.com/openfaas/faasd/archive/refs/tags/0.11.4.tar.gz"
       }
     },
+    "flake-compat": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1627557337,
+        "narHash": "sha256-S/Aab7AcDS+MopcnkEWu0j3qOGLLaMw1E8VWWQOD+Q8=",
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "rev": "c6f3b635321160c629b74fefc88c807b59a51646",
+        "type": "github"
+      },
+      "original": {
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1624522661,
@@ -31,6 +47,7 @@
     "root": {
       "inputs": {
         "faasd-src": "faasd-src",
+        "flake-compat": "flake-compat",
         "nixpkgs": "nixpkgs",
         "utils": "utils"
       }

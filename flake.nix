@@ -4,13 +4,15 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-21.05";
     utils.url = "github:numtide/flake-utils";
+    flake-compat.url = "github:edolstra/flake-compat";
+    flake-compat.flake = false;
     faasd-src = {
       url = "https://github.com/openfaas/faasd/archive/refs/tags/0.11.4.tar.gz";
       flake = false;
     };
   };
 
-  outputs = { self, nixpkgs, utils, faasd-src }:
+  outputs = { self, nixpkgs, utils, faasd-src, ... }:
     let
       faasdVersion = "0.11.4";
       faasdRev = "dca036ee51a7275389bf45c7839d22d437663a8e";
@@ -99,7 +101,7 @@
         imports = [ ./faasd-module.nix ];
         nixpkgs.overlays = [ self.overlay ];
       };
-    } // utils.lib.eachSystem supportedSystems (system:
+    } // utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
@@ -109,7 +111,7 @@
       {
         defaultPackage = pkgs.faasd;
 
-        evShell = pkgs.mkShell {
+        devShell = pkgs.mkShell {
           buildInputs = [
             pkgs.nixpkgs-fmt
           ];
