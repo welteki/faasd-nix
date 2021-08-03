@@ -7,15 +7,15 @@
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
     faasd-src = {
-      url = "https://github.com/openfaas/faasd/archive/refs/tags/0.11.4.tar.gz";
+      url = "https://github.com/openfaas/faasd/archive/refs/tags/0.13.0.tar.gz";
       flake = false;
     };
   };
 
   outputs = { self, nixpkgs, utils, faasd-src, ... }:
     let
-      faasdVersion = "0.11.4";
-      faasdRev = "dca036ee51a7275389bf45c7839d22d437663a8e";
+      faasdVersion = "0.13.0";
+      faasdRev = "12ada59bf1289ea1543a56d7f711194251fb8a95";
 
       supportedSystems = [
         "x86_64-linux"
@@ -49,24 +49,41 @@
           };
         in
         {
-          containerd = prev.containerd.overrideAttrs (oldAttrs: {
-            version = "1.3.5";
+          containerd = buildGoModule rec {
+            pname = "containerd";
+            version = "1.5.4";
+
+            outputs = [ "out" "man" ];
+
             src = fetchFromGitHub {
               owner = "containerd";
               repo = "containerd";
-              rev = "9b6f3ec0307a825c38617b93ad55162b5bb94234";
-              sha256 = "sha256-M1+DSNkV+Ly0vUf4nOWlXNDhTiFG3Sztg0hDpzfTw10=";
+              rev = "v${version}";
+              sha256 = "sha256-VV1cxA8tDRiPDxKV8OGu3T7sgutmyL+VPNqTeFcVjJA=";
             };
 
-            nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [ pkg-config ];
+            vendorSha256 = null;
 
-            buildInputs = oldAttrs.buildInputs ++ [ libseccomp ];
+            nativeBuildInputs = [ go-md2man installShellFiles util-linux ];
+
+            buildInputs = [ btrfs-progs ];
+
+            buildFlags = [ "VERSION=v${version}" "REVISION=${src.rev}" ];
+
+            BUILDTAGS = lib.optionals (btrfs-progs == null) [ "no_btrfs" ];
+
+            buildPhase = ''
+              patchShebangs .
+              make binaries man $buildFlags
+            '';
 
             installPhase = ''
               install -Dm555 bin/* -t $out/bin
               installManPage man/*.[1-9]
+              installShellCompletion --bash contrib/autocomplete/ctr
+              installShellCompletion --zsh --name _ctr contrib/autocomplete/zsh_autocomplete
             '';
-          });
+          };
 
           faasd = stdenv.mkDerivation rec {
             inherit faasdBuild;
