@@ -22,9 +22,6 @@ in
   };
 
   config = mkIf cfg.enable {
-    # TODO: disable this once containerd version used by faasd supports cgroupsv2.
-    systemd.enableUnifiedCgroupHierarchy = false;
-
     networking.firewall.trustedInterfaces = [ "openfaas0" ];
 
     boot.kernel.sysctl = {
