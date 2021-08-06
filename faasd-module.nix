@@ -2,11 +2,30 @@
 
 with lib;
 let
+  importYAML = f:
+    let
+      jsonFile = pkgs.runCommand "in.json"
+        {
+          nativeBuildInputs = [ pkgs.remarshal ];
+        } ''
+        yaml2json < "${f}" > "$out"
+      '';
+    in
+    builtins.fromJSON (builtins.readFile jsonFile);
+
   cfg = config.services.faasd;
 
-  coreServices = builtins.fromJson "${cfg.package}/faasd-installation/docker-compose.yaml";
+  coreServices = importYAML "${cfg.package}/installation/docker-compose.yaml";
+  dockerComposeAttrs = {
+    version = coreServices.version;
+    services = cfg.services;
+  };
+
+  dockerComposeYaml = pkgs.writeText "docker-compose.yaml" (builtins.toJSON dockerComposeAttrs);
 in
 {
+  imports = [ ./services.nix ];
+
   options.services.faasd = {
     enable = mkOption {
       type = types.bool;
@@ -31,6 +50,8 @@ in
     environment.systemPackages = with pkgs; [
       cni-plugins
     ];
+
+    services.faasd.services = coreServices.services;
 
     virtualisation.containerd.enable = true;
 
@@ -75,7 +96,7 @@ in
           echo "admin" > /var/lib/faasd/secrets/basic-auth-user
         fi
 
-        ln -sfn "${cfg.package}/installation/docker-compose.yaml" "/var/lib/faasd/docker-compose.yaml"
+        ln -sfn "${dockerComposeYaml}" "/var/lib/faasd/docker-compose.yaml"
         ln -sfn "${cfg.package}/installation/prometheus.yml" "/var/lib/faasd/prometheus.yml"
         ln -sfn "${cfg.package}/installation/resolv.conf" "/var/lib/faasd/resolv.conf"
       '';
