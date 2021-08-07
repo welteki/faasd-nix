@@ -21,7 +21,11 @@ let
     services = cfg.services;
   };
 
-  dockerComposeYaml = pkgs.writeText "docker-compose.yaml" (builtins.toJSON dockerComposeAttrs);
+  dockerComposeYaml = pkgs.runCommand "docker-compose.yaml" { nativeBuildInputs = [ pkgs.jq ]; } ''
+    jq 'walk( if type == "object" then with_entries(select(.value != null)) else . end)' > $out <<EOL
+      ${builtins.toJSON dockerComposeAttrs}
+    EOL
+  '';
 in
 {
   imports = [ ./services.nix ];
