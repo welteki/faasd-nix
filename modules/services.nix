@@ -3,14 +3,12 @@ let
   inherit (lib) mkOption types;
   inherit (types) listOf nullOr attrsOf str either int bool submodule;
 
-  cfg = config.services.faasd;
-
   link = url: text:
     ''link:${url}[${text}]'';
   dockerComposeRef = fragment:
     ''See ${link "https://github.com/compose-spec/compose-spec/blob/master/spec.md?/#${fragment}" "Compose Specification#${fragment}"}'';
 
-  serviceOptions =
+  containerOptions =
     { ... }: {
       options = {
         image = mkOption {
@@ -65,9 +63,9 @@ let
 in
 {
   options.services.faasd = {
-    services = mkOption {
+    containers = mkOption {
       default = { };
-      type = attrsOf (submodule serviceOptions);
+      type = attrsOf (submodule containerOptions);
       description = "OCI (Docker) containers to run as additional services on faasd.";
     };
   };

@@ -18,7 +18,7 @@ let
   coreServices = importYAML "${cfg.package}/installation/docker-compose.yaml";
   dockerComposeAttrs = {
     version = coreServices.version;
-    services = cfg.services;
+    services = cfg.containers;
   };
 
   dockerComposeYaml = pkgs.runCommand "docker-compose.yaml" { nativeBuildInputs = [ pkgs.jq ]; } ''
@@ -55,7 +55,7 @@ in
       cni-plugins
     ];
 
-    services.faasd.services = coreServices.services;
+    services.faasd.containers = coreServices.services;
 
     virtualisation.containerd.enable = true;
 
