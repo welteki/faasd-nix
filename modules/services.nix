@@ -58,6 +58,12 @@ let
           example = [ "CAP_NET_RAW" "SYS_ADMIN" ];
           description = dockerComposeRef "cap_add";
         };
+
+        entrypoint = mkOption {
+          type = nullOr str;
+          default = null;
+          description = dockerComposeRef "entypoint";
+        };
       };
     };
 in
