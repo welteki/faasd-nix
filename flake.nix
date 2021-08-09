@@ -115,7 +115,7 @@
         };
 
       nixosModules.faasd = {
-        imports = [ ./faasd-module.nix ];
+        imports = [ ./modules/faasd-module.nix ];
         nixpkgs.overlays = [ self.overlay ];
       };
     } // utils.lib.eachSystem supportedSystems (system:
