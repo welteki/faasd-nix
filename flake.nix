@@ -49,7 +49,7 @@
           };
         in
         {
-          containerd = buildGoModule rec {
+          faasd-containerd = buildGoModule rec {
             pname = "containerd";
             version = "1.5.4";
 
@@ -84,6 +84,8 @@
               installShellCompletion --zsh --name _ctr contrib/autocomplete/zsh_autocomplete
             '';
           };
+
+          containerd = final.faasd-containerd;
 
           faasd = stdenv.mkDerivation rec {
             inherit faasdBuild;
@@ -126,7 +128,11 @@
         };
       in
       {
-        defaultPackage = pkgs.faasd;
+
+        packages.faasd = pkgs.faasd;
+        packages.faasd-containerd = pkgs.faasd-containerd;
+
+        defaultPackage = self.packages.${system}.faasd;
 
         devShell = pkgs.mkShell {
           buildInputs = [
