@@ -20,4 +20,8 @@ jobs:
           name: welteki
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
       - name: Build 🔧
-        run: nix build
+        run: |
+          # Build faasd
+          nix build
+          # Build faasd-containerd
+          nix build .#faasd-containerd
