@@ -7,15 +7,15 @@
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
     faasd-src = {
-      url = "https://github.com/openfaas/faasd/archive/refs/tags/0.13.0.tar.gz";
+      url = "https://github.com/openfaas/faasd/archive/refs/tags/0.14.2.tar.gz";
       flake = false;
     };
   };
 
   outputs = { self, nixpkgs, utils, faasd-src, ... }:
     let
-      faasdVersion = "0.13.0";
-      faasdRev = "12ada59bf1289ea1543a56d7f711194251fb8a95";
+      faasdVersion = "0.14.2";
+      faasdRev = "3fe0d8d8d3fab622e4f223ded73b1f6ff4b37a1b";
 
       supportedSystems = [
         "x86_64-linux"
