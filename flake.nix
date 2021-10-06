@@ -117,6 +117,13 @@
         imports = [ ./modules/faasd-module.nix ];
         nixpkgs.overlays = [ self.overlay ];
       };
+
+      templates = {
+        hc-bootstrap = {
+          path = ./bootstrap/hetzner-cloud-terraform;
+          description = "Bootstrap faasd on hetzner cloud";
+        };
+      };
     } // utils.lib.eachSystem supportedSystems (system:
       let
         pkgs = import nixpkgs {
