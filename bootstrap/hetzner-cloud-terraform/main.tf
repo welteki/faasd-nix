@@ -41,5 +41,5 @@ EOF
 }
 
 output "deploy_cmd" {
-  value = "deploy .#faasd --hostname=${hcloud_server.faasd.ipv4_address} --ssh-user=root --ssh-opts='-i ${var.ssh_key_file}'"
+  value = "deploy .#faasd --hostname=${hcloud_server.faasd.ipv4_address} --ssh-user=root"
 }
