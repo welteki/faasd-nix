@@ -48,12 +48,11 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
         terrafrom-withplugins = (pkgs.terraform.withPlugins (p: with p; [ hcloud ]));
-        configFile = ./config.json;
         terraform = pkgs.writeShellScriptBin "terraform" ''
           flag=
 
           if [[ "$1" = "plan" || "$1" = "apply" ]]
-            then flag="-var-file=${configFile}"
+            then flag="-var-file=$BOOTSTRAP_CONFIG"
           fi
 
           ${terrafrom-withplugins}/bin/terraform $* $flag
@@ -61,6 +60,10 @@
       in
       {
         devShell = pkgs.mkShell {
+          shellHook = ''
+            export BOOTSTRAP_CONFIG="./config.json"
+          '';
+
           buildInputs = [
             terraform
             deploy-rs.packages.${system}.deploy-rs
