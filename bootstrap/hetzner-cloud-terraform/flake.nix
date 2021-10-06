@@ -40,12 +40,24 @@
         };
       };
     } // utils.lib.eachDefaultSystem (system:
-      let pkgs = nixpkgs.legacyPackages.${system}; in
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
+        terrafrom-withplugins = (pkgs.terraform.withPlugins (p: with p; [ hcloud ]));
+        configFile = ./config.json;
+        terraform = pkgs.writeShellScriptBin "terraform" ''
+          flag=
+
+          if [[ "$1" = "plan" || "$1" = "apply" ]]
+            then flag="-var-file=${configFile}"
+          fi
+
+          ${terrafrom-withplugins}/bin/terraform $* $flag
+        '';
+      in
       {
         devShell = pkgs.mkShell {
           buildInputs = [
-            (pkgs.terraform.withPlugins
-              (p: with p; [ hcloud ]))
+            terraform
             deploy-rs.packages.${system}.deploy-rs
           ];
         };
