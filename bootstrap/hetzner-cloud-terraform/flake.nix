@@ -24,6 +24,11 @@
                 faasd.nixosModules.faasd
               ];
 
+              services.openssh = {
+                enable = true;
+                passwordAuthentication = false;
+              };
+
               services.faasd.enable = true;
             })
         ];
