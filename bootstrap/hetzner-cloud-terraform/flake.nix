@@ -14,25 +14,31 @@
       system = "x86_64-linux";
     in
     {
-      nixosConfigurations.faasd = nixosSystem {
-        inherit system;
-        modules = [
-          ({ pkgs, ... }:
-            {
-              imports = [
-                ./hetzner-cloud.nix
-                faasd.nixosModules.faasd
-              ];
+      nixosConfigurations.faasd =
+        let
+          configFile = ./config.json;
+          config = builtins.fromJSON (builtins.readFile configFile);
+        in
+        nixosSystem {
+          inherit system;
+          modules = [
+            ({ pkgs, ... }:
+              {
+                imports = [
+                  ./hetzner-cloud.nix
+                  faasd.nixosModules.faasd
+                ];
 
-              services.openssh = {
-                enable = true;
-                passwordAuthentication = false;
-              };
+                services.openssh = {
+                  enable = true;
+                  passwordAuthentication = false;
+                };
+                users.users.root.openssh.authorizedKeys.keys = [ config.ssh_public_key ];
 
-              services.faasd.enable = true;
-            })
-        ];
-      };
+                services.faasd.enable = true;
+              })
+          ];
+        };
 
       deploy = {
         magicRollback = false;
@@ -69,6 +75,8 @@
             deploy-rs.packages.${system}.deploy-rs
           ];
         };
+
+        checks = deploy-rs.lib.${system}.deployChecks self.deploy;
       }
     );
 }

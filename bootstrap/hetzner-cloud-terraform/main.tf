@@ -12,9 +12,8 @@ terraform {
 variable "hc_token" {
   description = "Hetzner Cloud API token"
 }
-variable "ssh_key_file" {
-  default = "~/.ssh/id_rsa.pub"
-  description = "Path to the SSH public key file"
+variable "ssh_public_key" {
+  description = "Public ssh key"
 }
 
 provider "hcloud" {
@@ -23,7 +22,7 @@ provider "hcloud" {
 
 resource "hcloud_ssh_key" "faasd_ssh_key" {
   name = "faasd-ssh-key"
-  public_key = file(var.ssh_key_file)
+  public_key = var.ssh_public_key
 }
 
 resource "hcloud_server" "faasd" {
