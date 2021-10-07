@@ -37,14 +37,11 @@
             vendorSha256 = null;
 
             CGO_ENABLED = 0;
-            buildFlagsArray = [
-              ''
-                -ldflags=
-                -s -w
-                -X main.Version=${version}
-                -X main.GitCommit=${commit}
-              ''
-              "-a"
+            ldflags = [
+              "-s"
+              "-w"
+              "-X main.Version=${version}"
+              "-X main.GitCommit=${commit}"
             ];
           };
         in
