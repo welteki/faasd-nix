@@ -3,13 +3,13 @@
     "faasd-src": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-cxpOZtF3rbzLN/5YVsJ8uwe2hvnaC3hv3PRTp2AESgk=",
+        "narHash": "sha256-UuHZIhFW2VDlsVmtHIP1HdbQ+KIPypNx7vUVZnC+bCk=",
         "type": "tarball",
-        "url": "https://github.com/openfaas/faasd/archive/refs/tags/0.13.0.tar.gz"
+        "url": "https://github.com/openfaas/faasd/archive/refs/tags/0.14.2.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://github.com/openfaas/faasd/archive/refs/tags/0.13.0.tar.gz"
+        "url": "https://github.com/openfaas/faasd/archive/refs/tags/0.14.2.tar.gz"
       }
     },
     "flake-compat": {
