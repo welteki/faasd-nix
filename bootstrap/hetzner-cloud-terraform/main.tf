@@ -42,3 +42,11 @@ EOF
 output "deploy_cmd" {
   value = "deploy .#faasd --hostname=${hcloud_server.faasd.ipv4_address} --ssh-user=root"
 }
+
+output "gateway_url" {
+  value = "http://${hcloud_server.faasd.ipv4_address}:8080/"
+}
+
+output "login_cmd" {
+  value = "ssh root@${hcloud_server.faasd.ipv4_address} 'cat /var/lib/faasd/secrets/basic-auth-password' | faas-cli login -g http://${hcloud_server.faasd.ipv4_address}:8080/ -s"
+}
