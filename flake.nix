@@ -7,15 +7,15 @@
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
     faasd-src = {
-      url = "https://github.com/openfaas/faasd/archive/refs/tags/0.14.3.tar.gz";
+      url = "https://github.com/openfaas/faasd/archive/refs/tags/0.14.4.tar.gz";
       flake = false;
     };
   };
 
   outputs = { self, nixpkgs, utils, faasd-src, ... }:
     let
-      faasdVersion = "0.14.3";
-      faasdRev = "ea62c1b12dd1ae1de794e6dd260351cfbd1a6759";
+      faasdVersion = "0.14.4";
+      faasdRev = "8fbdd1a461196520de75fe35ac0b5bdda6403ac7";
 
       supportedSystems = [
         "x86_64-linux"
@@ -27,10 +27,9 @@
         with final;
 
         let
-          faasdBuild = buildGoModule rec {
+          faasdBuild = buildGoModule {
             pname = "faasd-build";
             version = "${faasdVersion}";
-            commit = "${faasdRev}";
 
             src = "${faasd-src}";
 
@@ -40,8 +39,8 @@
             ldflags = [
               "-s"
               "-w"
-              "-X main.Version=${version}"
-              "-X main.GitCommit=${commit}"
+              "-X main.Version=${faasdVersion}"
+              "-X main.GitCommit=${faasdRev}"
             ];
           };
         in
