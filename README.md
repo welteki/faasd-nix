@@ -23,20 +23,20 @@ This is the grafana example taken from the [serverless-book](https://gumroad.com
 
   services.faasd.containers = {
     grafana = {
-    image = "docker.io/grafana/grafana:latest";
-    environment = [
-      "GF_AUTH_ANONYMOUS_ORG_ROLE=Admin"
-      "GF_AUTH_ANONYMOUS_ENABLED=true"
-      "GF_AUTH_BASIC_ENABLED=false"
-    ];
-    volumes = [{ 
-      type = "bind";
-      source = "./grafana/";
-      target = "/etc/grafana/provisioning";
-    }];
-    cap_add = [ "CAP_NET_RAW" ];
-    depends_on = [ "prometheus" ];
-    ports = [ "3000:3000" ];
+      image = "docker.io/grafana/grafana:latest";
+      environment = [
+        "GF_AUTH_ANONYMOUS_ORG_ROLE=Admin"
+        "GF_AUTH_ANONYMOUS_ENABLED=true"
+        "GF_AUTH_BASIC_ENABLED=false"
+      ];
+      volumes = [{ 
+        type = "bind";
+        source = "./grafana/";
+        target = "/etc/grafana/provisioning";
+      }];
+      cap_add = [ "CAP_NET_RAW" ];
+      depends_on = [ "prometheus" ];
+      ports = [ "3000:3000" ];
     };
   };
 }
