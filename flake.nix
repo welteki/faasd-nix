@@ -10,9 +10,11 @@
       url = "https://github.com/openfaas/faasd/archive/refs/tags/0.14.4.tar.gz";
       flake = false;
     };
+    nixos-shell.url = "github:welteki/nixos-shell/improve-flake-support";
+    nixos-shell.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, utils, faasd-src, ... }:
+  outputs = { self, nixpkgs, utils, faasd-src, ... }@inputs:
     let
       faasdVersion = "0.14.4";
       faasdRev = "8fbdd1a461196520de75fe35ac0b5bdda6403ac7";
@@ -20,6 +22,17 @@
       supportedSystems = [
         "x86_64-linux"
       ];
+
+      # NixOS configuration used for VM tests.
+      faasdServer =
+        { pkgs, ... }:
+        {
+          imports = [ self.nixosModules.faasd ];
+
+          virtualisation.memorySize = 1024;
+
+          services.faasd.enable = true;
+        };
     in
     {
       overlay = final: prev:
@@ -117,18 +130,26 @@
         nixpkgs.overlays = [ self.overlay ];
       };
 
+      nixosConfigurations.faasd-vm = inputs.nixos-shell.lib.nixosShellSystem {
+        system = "x86_64-linux";
+        modules = [ faasdServer (args: { nixos-shell.mounts.mountHome = false; }) ];
+      };
+
       templates = {
         hc-bootstrap = {
           path = ./bootstrap/hetzner-cloud-terraform;
           description = "Bootstrap faasd on hetzner cloud";
         };
       };
+
     } // utils.lib.eachSystem supportedSystems (system:
       let
         pkgs = import nixpkgs {
           inherit system;
           overlays = [ self.overlay ];
         };
+
+        nixos-shell = inputs.nixos-shell.defaultPackage.${system};
       in
       {
 
@@ -137,8 +158,18 @@
 
         defaultPackage = self.packages.${system}.faasd;
 
+        devShells.faasd-vm = pkgs.mkShell {
+          buildInputs = [
+            nixos-shell
+            pkgs.faas-cli
+          ];
+        };
+
         devShell = pkgs.mkShell {
           buildInputs = [
+            nixos-shell
+            pkgs.faas-cli
+
             pkgs.nixpkgs-fmt
           ];
         };
