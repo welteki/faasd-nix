@@ -132,7 +132,7 @@
 
       nixosConfigurations.faasd-vm = inputs.nixos-shell.lib.nixosShellSystem {
         system = "x86_64-linux";
-        modules = [ faasdServer ];
+        modules = [ faasdServer (args: { nixos-shell.mounts.mountHome = false; }) ];
       };
 
       templates = {
