@@ -148,6 +148,8 @@
           inherit system;
           overlays = [ self.overlay ];
         };
+
+        nixos-shell = inputs.nixos-shell.defaultPackage.${system};
       in
       {
 
@@ -156,11 +158,18 @@
 
         defaultPackage = self.packages.${system}.faasd;
 
+        devShells.faasd-vm = pkgs.mkShell {
+          buildInputs = [
+            nixos-shell
+            pkgs.faas-cli
+          ];
+        };
+
         devShell = pkgs.mkShell {
           buildInputs = [
-            inputs.nixos-shell.defaultPackage.${system}
-
+            nixos-shell
             pkgs.faas-cli
+
             pkgs.nixpkgs-fmt
           ];
         };
