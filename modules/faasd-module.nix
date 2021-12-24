@@ -1,7 +1,9 @@
 { config, lib, pkgs, ... }:
 
-with lib;
 let
+  inherit (lib) mkOption mkIf mkMerge types concatMapStrings;
+  inherit (types) package bool str attrsOf listOf submodule nullOr;
+
   importYAML = f:
     let
       jsonFile = pkgs.runCommand "in.json"
@@ -14,47 +16,48 @@ let
     builtins.fromJSON (builtins.readFile jsonFile);
 
   cfg = config.services.faasd;
+  service = import ./services.nix;
 
   coreServices = importYAML "${cfg.package}/installation/docker-compose.yaml";
   dockerComposeAttrs = {
     version = coreServices.version;
-    services = cfg.containers;
+    services = lib.mapAttrs (k: c: c.out) cfg.containers;
   };
 
-  dockerComposeYaml = pkgs.runCommand "docker-compose.yaml" { nativeBuildInputs = [ pkgs.jq ]; } ''
-    jq 'walk( if type == "object" then with_entries(select(.value != null)) else . end)' > $out <<EOL
-      ${builtins.toJSON dockerComposeAttrs}
-    EOL
-  '';
+  dockerComposeYaml = pkgs.writeText "docker-compose.yaml" (builtins.toJSON dockerComposeAttrs);
 in
 {
-  imports = [ ./services.nix ];
-
   options.services.faasd = {
     enable = mkOption {
-      type = types.bool;
+      type = bool;
       default = false;
       description = "Lightweight faas engine";
     };
 
     package = mkOption {
       description = "Faasd package to use.";
-      type = types.package;
+      type = package;
       default = pkgs.faasd;
     };
 
     basicAuth = {
       user = mkOption {
-        type = types.str;
+        type = str;
         default = "admin";
         description = "Basic-auth user";
       };
       passwordFile = mkOption {
-        type = types.nullOr types.str;
+        type = nullOr str;
         default = null;
         description = "Path to file containing password";
         example = "/etc/nixos/faasd-basic-auth-password";
       };
+    };
+
+    containers = mkOption {
+      default = { };
+      type = attrsOf (submodule service);
+      description = "OCI (Docker) containers to run as additional services on faasd.";
     };
 
     namespaces = mkOption {
