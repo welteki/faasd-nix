@@ -16,7 +16,7 @@ let
     builtins.fromJSON (builtins.readFile jsonFile);
 
   cfg = config.services.faasd;
-  service = import ./services.nix;
+  service = import ./service.nix;
 
   coreServices = importYAML "${cfg.package}/installation/docker-compose.yaml";
   dockerComposeAttrs = {
