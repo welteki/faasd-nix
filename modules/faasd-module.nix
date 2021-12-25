@@ -68,6 +68,12 @@ in
       '';
       example = [ "dev" ];
     };
+
+    seedDockerImages = mkOption {
+      description = "List of docker images to preload on system";
+      default = [ ];
+      type = listOf package;
+    };
   };
 
   config = mkMerge [
@@ -79,6 +85,10 @@ in
       };
 
       virtualisation.containerd.enable = true;
+
+      # Seed images for containers that have imageFile attribute
+      services.faasd.seedDockerImages =
+        lib.remove null (lib.catAttrs "imageFile" (lib.attrValues cfg.containers));
 
       systemd.tmpfiles.rules = [
         "d /opt/cni/bin 0755 root root -"
@@ -171,6 +181,31 @@ in
         wantedBy = [ "multi-user.target" ];
         after = [ "containerd.service" ];
         requires = [ "containerd.service" ];
+
+        serviceConfig = {
+          Type = "oneshot";
+        };
+      };
+    })
+
+    (mkIf (cfg.seedDockerImages != [ ]) {
+      systemd.services.faasd-seed-images = {
+        description = "Seed faasd container images";
+        script = ''
+          # Seed container images
+          ${concatMapStrings (img: ''
+            echo "Seeding container image: ${img}"
+            ${if (lib.hasSuffix "gz" img) then
+              ''${pkgs.gzip}/bin/zcat "${img}" | ${pkgs.containerd}/bin/ctr -n openfaas image import -''
+            else
+              ''${pkgs.coreutils}/bin/cat "${img}" | ${pkgs.containerd}/bin/ctr -n openfaas image import -''
+            }
+          '') cfg.seedDockerImages}
+        '';
+
+        before = [ "faasd.service" ];
+        wantedBy = [ "multi-user.target" ];
+        after = [ "containerd.service" ];
 
         serviceConfig = {
           Type = "oneshot";
