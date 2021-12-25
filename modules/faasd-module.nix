@@ -4,29 +4,19 @@ let
   inherit (lib) mkOption mkIf mkMerge types concatMapStrings;
   inherit (types) package bool str attrsOf listOf submodule nullOr;
 
-  importYAML = f:
-    let
-      jsonFile = pkgs.runCommand "in.json"
-        {
-          nativeBuildInputs = [ pkgs.remarshal ];
-        } ''
-        yaml2json < "${f}" > "$out"
-      '';
-    in
-    builtins.fromJSON (builtins.readFile jsonFile);
-
   cfg = config.services.faasd;
   service = import ./service.nix;
 
-  coreServices = importYAML "${cfg.package}/installation/docker-compose.yaml";
   dockerComposeAttrs = {
-    version = coreServices.version;
+    version = "3.7";
     services = lib.mapAttrs (k: c: c.out) cfg.containers;
   };
 
   dockerComposeYaml = pkgs.writeText "docker-compose.yaml" (builtins.toJSON dockerComposeAttrs);
 in
 {
+  imports = import ./core-services;
+
   options.services.faasd = {
     enable = mkOption {
       type = bool;
@@ -79,8 +69,6 @@ in
       boot.kernel.sysctl = {
         "net.ipv4.conf.all.forwarding" = 1;
       };
-
-      services.faasd.containers = coreServices.services;
 
       virtualisation.containerd.enable = true;
 
