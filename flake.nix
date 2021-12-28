@@ -77,13 +77,11 @@
 
             buildInputs = [ btrfs-progs ];
 
-            buildFlags = [ "VERSION=v${version}" "REVISION=${src.rev}" ];
-
             BUILDTAGS = lib.optionals (btrfs-progs == null) [ "no_btrfs" ];
 
             buildPhase = ''
               patchShebangs .
-              make binaries man $buildFlags
+              make binaries man "VERSION=v${version}" "REVISION=${src.rev}"
             '';
 
             installPhase = ''
