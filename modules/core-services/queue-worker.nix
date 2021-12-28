@@ -1,10 +1,18 @@
-{ config, lib, ... }:
+{ config, pkgs, lib, ... }:
 let
-  inherit (lib) mkOption types;
+  inherit (lib) mkIf mkOption types;
+  inherit (pkgs.dockerTools) pullImage;
 
   cfg = config.services.faasd;
 
   boolToString = e: if e then "true" else "false";
+
+  queue-worker = pullImage {
+    imageName = "ghcr.io/openfaas/queue-worker";
+    imageDigest = "sha256:dd69cc3d77c2e06df54ed2dddea384b6defc51ec35763a5ed377548fd30c6831";
+    finalImageTag = "0.12.2";
+    sha256 = "sha256-Rq5xPkEfkd0NrDcIb5YY4SfAsYlqvQxN7yXx0/01lJs=";
+  };
 
   mkContainer =
     { natsChannel ? "faas-request"
@@ -12,6 +20,7 @@ let
     , writeDebug ? false
     }: {
       image = "ghcr.io/openfaas/queue-worker:0.12.2";
+      imageFile = mkIf cfg.seedCoreImages queue-worker;
       environment = {
         faas_nats_address = "nats";
         faas_nats_port = 4222;

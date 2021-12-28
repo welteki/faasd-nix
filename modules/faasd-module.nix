@@ -69,6 +69,12 @@ in
       example = [ "dev" ];
     };
 
+    seedCoreImages = mkOption {
+      description = "Seed faasd core images";
+      type = bool;
+      default = false;
+    };
+
     seedDockerImages = mkOption {
       description = "List of docker images to preload on system";
       default = [ ];

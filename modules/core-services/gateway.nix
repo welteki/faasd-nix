@@ -1,11 +1,19 @@
-{ config, lib, ... }:
+{ config, pkgs, lib, ... }:
 let
-  inherit (lib) mkOption types;
+  inherit (lib) mkIf mkOption types;
   inherit (types) bool int;
+  inherit (pkgs.dockerTools) pullImage;
 
   cfg = config.services.faasd;
 
   boolToString = e: if e then "true" else "false";
+
+  gateway = pullImage {
+    imageName = "ghcr.io/openfaas/gateway";
+    imageDigest = "sha256:272fdfa1ba4b090da57eb6cf0afd980965d320d25a9aa81bb46e5be419eed131";
+    finalImageTag = "0.21.0";
+    sha256 = "sha256-k71kZhu/0eCgRg7ghG9+R21S1TJ4jS1RiibuRd6emE8=";
+  };
 
   gatewayOpts = {
     writeTimeout = mkOption {
@@ -41,6 +49,7 @@ in
   config = {
     services.faasd.containers.gateway = {
       image = "ghcr.io/openfaas/gateway:0.21.0";
+      imageFile = mkIf cfg.seedCoreImages gateway;
       environment = {
         basic_auth = boolToString cfg.basicAuth.enable;
         functions_provider_url = "http://faasd-provider:8081/";
