@@ -56,7 +56,21 @@
             };
           });
 
+          faasd-cni-plugins = prev.cni-plugins.overrideAttrs (old: rec {
+            version = "0.8.5";
+
+            src = fetchFromGitHub {
+              owner = "containernetworking";
+              repo = "plugins";
+              rev = "v${version}";
+              sha256 = "sha256-8UZ13e7h9VuYFWd/MaqtZ2rUIEw5xwOVUe02YO++iJ0=";
+            };
+
+            subPackages = lib.remove "plugins/meta/vrf" old.subPackages;
+          });
+
           containerd = final.faasd-containerd;
+          cni-plugins = final.faasd-cni-plugins;
 
           faasd = buildGoModule {
             pname = "faasd";
@@ -116,9 +130,9 @@
         nixos-shell = inputs.nixos-shell.defaultPackage.${system};
       in
       {
-
-        packages.faasd = pkgs.faasd;
-        packages.faasd-containerd = pkgs.faasd-containerd;
+        packages = {
+          inherit (pkgs) faasd faasd-containerd faasd-cni-plugins;
+        };
 
         defaultPackage = self.packages.${system}.faasd;
 

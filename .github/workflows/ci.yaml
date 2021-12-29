@@ -25,3 +25,5 @@ jobs:
           nix build
           # Build faasd-containerd
           nix build .#faasd-containerd
+          # Build faas-cni-plugins
+          nix build .#faasd-cni-plugins
