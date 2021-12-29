@@ -36,26 +36,17 @@
     in
     {
       overlay = final: prev:
-
-        with final;
-
         let
-          faasdBuild = buildGoModule {
-            pname = "faasd-build";
-            version = "${faasdVersion}";
-
-            src = "${faasd-src}";
-
-            vendorSha256 = null;
-
-            CGO_ENABLED = 0;
-            ldflags = [
-              "-s"
-              "-w"
-              "-X main.Version=${faasdVersion}"
-              "-X main.GitCommit=${faasdRev}"
-            ];
-          };
+          inherit (final)
+            lib
+            buildGoModule
+            fetchFromGitHub
+            go-md2man
+            installShellFiles
+            util-linux
+            btrfs-progs
+            makeWrapper
+            iptables;
         in
         {
           faasd-containerd = buildGoModule rec {
@@ -94,31 +85,33 @@
 
           containerd = final.faasd-containerd;
 
-          faasd = stdenv.mkDerivation rec {
-            inherit faasdBuild;
-
+          faasd = buildGoModule {
             pname = "faasd";
             version = "${faasdVersion}";
 
-            faasdRuntimeDeps = [
-              iptables
+            src = "${faasd-src}";
+
+            vendorSha256 = null;
+
+            CGO_ENABLED = 0;
+
+            buildInputs = [ makeWrapper ];
+
+            ldflags = [
+              "-s"
+              "-w"
+              "-X main.Version=${faasdVersion}"
+              "-X main.GitCommit=${faasdRev}"
             ];
 
-            buildInputs = [
-              makeWrapper
-            ] ++ faasdRuntimeDeps;
-
-            unpackPhase = "true";
-
-            installPhase = ''
-              mkdir -p "$out/bin"
-               makeWrapper ${faasdBuild}/bin/faasd "$out/bin/faasd" \
-                --prefix PATH : ${lib.makeBinPath faasdRuntimeDeps}
+            postInstall = ''
+              wrapProgram $out/bin/faasd \
+                --prefix PATH : ${lib.makeBinPath [ iptables ]}
 
               mkdir -p $out/installation
-              cp ${faasd-src}/docker-compose.yaml $out/installation/docker-compose.yaml
-              cp ${faasd-src}/prometheus.yml $out/installation/prometheus.yml
-              cp ${faasd-src}/resolv.conf $out/installation/resolv.conf
+              cp ./docker-compose.yaml $out/installation/docker-compose.yaml
+              cp ./prometheus.yml $out/installation/prometheus.yml
+              cp ./resolv.conf $out/installation/resolv.conf
             '';
           };
         };
