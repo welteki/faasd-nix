@@ -82,8 +82,6 @@
 
             CGO_ENABLED = 0;
 
-            buildInputs = [ makeWrapper ];
-
             ldflags = [
               "-s"
               "-w"
@@ -92,9 +90,6 @@
             ];
 
             postInstall = ''
-              wrapProgram $out/bin/faasd \
-                --prefix PATH : ${lib.makeBinPath [ iptables ]}
-
               mkdir -p $out/installation
               cp ./docker-compose.yaml $out/installation/docker-compose.yaml
               cp ./prometheus.yml $out/installation/prometheus.yml

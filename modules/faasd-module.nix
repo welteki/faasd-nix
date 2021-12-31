@@ -113,6 +113,7 @@ in
       description = "faasd-provider";
       after = [ "network.service" "firewall.service" ];
       wantedBy = [ "multi-user.target" ];
+      path = [ pkgs.iptables ];
 
       serviceConfig = {
         MemoryLimit = "500M";
@@ -128,6 +129,7 @@ in
       description = "faasd";
       after = [ "faasd-provider.service" ];
       wantedBy = [ "multi-user.target" ];
+      path = [ pkgs.iptables ];
 
       preStart = ''
         ln -fs "${dockerComposeYaml}" "/var/lib/faasd/docker-compose.yaml"
