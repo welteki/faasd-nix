@@ -42,6 +42,20 @@ in
       type = types.package;
       default = pkgs.faasd;
     };
+
+    basicAuth = {
+      user = mkOption {
+        type = types.str;
+        default = "admin";
+        description = "Basic-auth user";
+      };
+      passwordFile = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        description = "Path to file containing password";
+        example = "/etc/nixos/faasd-basic-aurh-password";
+      };
+    };
   };
 
   config = mkIf cfg.enable {
@@ -51,18 +65,49 @@ in
       "net.ipv4.conf.all.forwarding" = 1;
     };
 
-    environment.systemPackages = with pkgs; [
-      cni-plugins
-    ];
-
     services.faasd.containers = coreServices.services;
 
     virtualisation.containerd.enable = true;
 
     systemd.tmpfiles.rules = [
+      "d /opt/cni/bin 0755 root root -"
+      "d /usr/local/bin 0755 root root -"
       "d '/var/lib/faasd'"
       "d '/var/lib/faasd-provider'"
     ];
+
+    systemd.services.faasd-init = {
+      script = ''
+        # Link cni-plugins
+        ln -fs ${pkgs.cni-plugins}/bin/* /opt/cni/bin
+
+        # Link faasd binary
+        ln -fs "${cfg.package}/bin/faasd" "/usr/local/bin/faasd"
+
+        # Set basic-auth user and password
+        mkdir -p /var/lib/faasd/secrets
+        ${if cfg.basicAuth.passwordFile != null then
+          ''ln -fs ${cfg.basicAuth.passwordFile} /var/lib/faasd/secrets/basic-auth-password''
+        else
+          ''
+            if [ ! -e "/var/lib/faasd/secrets/basic-auth-password" ] ; then
+              (head -c 12 /dev/urandom | ${pkgs.perl}/bin/shasum | cut -d' ' -f1) > /var/lib/faasd/secrets/basic-auth-password
+            fi
+          ''
+        }
+        echo ${cfg.basicAuth.user} > /var/lib/faasd/secrets/basic-auth-user
+
+        ln -fs "${cfg.package}/installation/prometheus.yml" "/var/lib/faasd/prometheus.yml"
+        ln -fs "${cfg.package}/installation/resolv.conf" "/var/lib/faasd/resolv.conf"
+      '';
+
+      before = [ "faasd-provider.service" "faasd.service" ];
+      wantedBy = [ "multi-user.target" ];
+
+      serviceConfig = {
+        Type = "oneshot";
+      };
+    };
 
     systemd.services.faasd-provider = {
       description = "faasd-provider";
@@ -85,24 +130,7 @@ in
       wantedBy = [ "multi-user.target" ];
 
       preStart = ''
-        mkdir -p /opt/cni
-        ln -sfn "${pkgs.cni-plugins}/bin" "/opt/cni"
-        
-        mkdir -p /usr/local/bin
-        ln -sfn "${cfg.package}/bin/faasd" "/usr/local/bin/faasd"
-
-        mkdir -p /var/lib/faasd/secrets
-        if [ ! -e "/var/lib/faasd/secrets/basic-auth-password" ] ; then
-          (head -c 12 /dev/urandom | ${pkgs.perl}/bin/shasum | cut -d' ' -f1) > /var/lib/faasd/secrets/basic-auth-password
-        fi
-
-        if [ ! -e "/var/lib/faasd/secrets/basic-auth-user" ] ; then
-          echo "admin" > /var/lib/faasd/secrets/basic-auth-user
-        fi
-
-        ln -sfn "${dockerComposeYaml}" "/var/lib/faasd/docker-compose.yaml"
-        ln -sfn "${cfg.package}/installation/prometheus.yml" "/var/lib/faasd/prometheus.yml"
-        ln -sfn "${cfg.package}/installation/resolv.conf" "/var/lib/faasd/resolv.conf"
+        ln -fs "${dockerComposeYaml}" "/var/lib/faasd/docker-compose.yaml"
       '';
 
       serviceConfig = {
