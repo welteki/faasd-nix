@@ -53,7 +53,7 @@ in
         type = types.nullOr types.str;
         default = null;
         description = "Path to file containing password";
-        example = "/etc/nixos/faasd-basic-aurh-password";
+        example = "/etc/nixos/faasd-basic-auth-password";
       };
     };
   };
