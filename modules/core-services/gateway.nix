@@ -1,21 +1,65 @@
-{ ... }:
+{ config, lib, ... }:
+let
+  inherit (lib) mkOption types;
+  inherit (types) bool int;
+
+  cfg = config.services.faasd;
+
+  boolToString = e: if e then "true" else "false";
+
+  gatewayOpts = {
+    basicAuth = mkOption {
+      description = "Enable embedded basic auth on the /system and /ui endpoints.";
+      type = bool;
+      default = true;
+    };
+
+    writeTimeout = mkOption {
+      description = "HTTP timeout for writing a response body from your function (in seconds)";
+      type = int;
+      default = 60;
+    };
+
+    readTimeout = mkOption {
+      description = "HTTP timeout for reading the payload from the client caller (in seconds).";
+      type = int;
+      default = 60;
+    };
+
+    upstreamTimeout = mkOption {
+      description = "Maximum duration of HTTP call to upstream URL (in seconds).";
+      type = int;
+      default = 65;
+    };
+
+    scaleFormZero = mkOption {
+      description = "Enables an intercepting proxy which will scale any function from 0 replicas to the desired amount";
+      type = bool;
+      default = true;
+    };
+  };
+in
 {
-  config.services.faasd.containers = {
-    gateway = {
+  options = {
+    services.faasd.gateway = gatewayOpts;
+  };
+
+  config = {
+    services.faasd.containers.gateway = {
       image = "ghcr.io/openfaas/gateway:0.21.0";
       environment = {
-        basic_auth = "true";
+        basic_auth = boolToString cfg.gateway.basicAuth;
         functions_provider_url = "http://faasd-provider:8081/";
         direct_functions = "false";
-        read_timeout = "60s";
-        write_timeout = "60s";
-        upstream_timeout = "65s";
+        read_timeout = cfg.gateway.readTimeout;
+        write_timeout = cfg.gateway.writeTimeout;
+        upstream_timeout = cfg.gateway.upstreamTimeout;
         faas_nats_address = "nats";
         faas_nats_port = 4222;
         auth_proxy_url = "http://basic-auth-plugin:8080/validate";
         auth_proxy_pass_body = "false";
         secret_mount_path = "/run/secrets";
-        scale_from_zero = "true";
+        scale_from_zero = boolToString cfg.gateway.scaleFormZero;
         function_namespace = "openfaas-fn";
       };
       volumes = [
