@@ -16,6 +16,21 @@ let
   };
 
   dockerComposeYaml = pkgs.writeText "docker-compose.yaml" (builtins.toJSON dockerComposeAttrs);
+
+  seedOpts = {
+    options = {
+      namespace = mkOption {
+        description = "Namespace to use when seeding image.";
+        type = str;
+        default = "openfaas";
+      };
+
+      imageFile = mkOption {
+        description = "Path to the image file.";
+        type = package;
+      };
+    };
+  };
 in
 {
   imports = import ./core-services;
@@ -78,7 +93,7 @@ in
     seedDockerImages = mkOption {
       description = "List of docker images to preload on system";
       default = [ ];
-      type = listOf package;
+      type = listOf (submodule seedOpts);
     };
   };
 
@@ -93,8 +108,8 @@ in
       virtualisation.containerd.enable = true;
 
       # Seed images for containers that have imageFile attribute
-      services.faasd.seedDockerImages =
-        lib.remove null (lib.catAttrs "imageFile" (lib.attrValues cfg.containers));
+      services.faasd.seedDockerImages = lib.concatMap (image: [{ imageFile = image; }])
+        (lib.remove null (lib.catAttrs "imageFile" (lib.attrValues cfg.containers)));
 
       systemd.tmpfiles.rules = [
         "d /opt/cni/bin 0755 root root -"
@@ -199,12 +214,12 @@ in
         description = "Seed faasd container images";
         script = ''
           # Seed container images
-          ${concatMapStrings (img: ''
-            echo "Seeding container image: ${img}"
-            ${if (lib.hasSuffix "gz" img) then
-              ''${pkgs.gzip}/bin/zcat "${img}" | ${pkgs.containerd}/bin/ctr -n openfaas image import -''
+          ${concatMapStrings (opts: ''
+            echo "Seeding container image: ${opts.imageFile}"
+            ${if (lib.hasSuffix "gz" opts.imageFile) then
+              ''${pkgs.gzip}/bin/zcat "${opts.imageFile}" | ${pkgs.containerd}/bin/ctr -n ${opts.namespace} image import -''
             else
-              ''${pkgs.coreutils}/bin/cat "${img}" | ${pkgs.containerd}/bin/ctr -n openfaas image import -''
+              ''${pkgs.coreutils}/bin/cat "${opts.imageFile}" | ${pkgs.containerd}/bin/ctr -n ${opts.namespace} image import -''
             }
           '') cfg.seedDockerImages}
         '';
