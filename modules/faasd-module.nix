@@ -2,7 +2,7 @@
 
 let
   inherit (lib) mkOption mkIf mkMerge types concatMapStrings;
-  inherit (types) package bool str attrsOf listOf submodule nullOr;
+  inherit (types) package bool str attrsOf listOf enum submodule nullOr;
 
   cfg = config.services.faasd;
 
@@ -95,6 +95,14 @@ in
       default = [ ];
       type = listOf (submodule seedOpts);
     };
+
+    pullPolicy = mkOption {
+      description = ''
+        Set to "Always" to force a pull of images upon deployment, or "IfNotPresent" to try to use a cached image.
+      '';
+      type = enum [ "Always" "IfNotPresent" ];
+      default = "Always";
+    };
   };
 
   config = mkMerge [
@@ -162,7 +170,7 @@ in
           Restart = "on-failure";
           RestartSec = "10s";
           Environment = [ "basic_auth=${boolToString cfg.basicAuth.enable}" "secret_mount_path=/var/lib/faasd/secrets" ];
-          ExecStart = "${cfg.package}/bin/faasd provider";
+          ExecStart = "${cfg.package}/bin/faasd provider --pull-policy ${cfg.pullPolicy}";
           WorkingDirectory = "/var/lib/faasd-provider";
         };
       };
