@@ -103,6 +103,12 @@ in
       type = enum [ "Always" "IfNotPresent" ];
       default = "Always";
     };
+
+    nameserver = mkOption {
+      description = "Nameserver to use";
+      type = str;
+      default = "8.8.8.8";
+    };
   };
 
   config = mkMerge [
@@ -148,7 +154,7 @@ in
           echo ${cfg.basicAuth.user} > /var/lib/faasd/secrets/basic-auth-user
 
           ln -fs "${cfg.package}/installation/prometheus.yml" "/var/lib/faasd/prometheus.yml"
-          ln -fs "${cfg.package}/installation/resolv.conf" "/var/lib/faasd/resolv.conf"
+          echo "nameserver ${cfg.nameserver}" > "/var/lib/faasd/resolv.conf"
         '';
 
         before = [ "faasd-provider.service" "faasd.service" ];
