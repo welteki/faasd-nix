@@ -169,6 +169,70 @@
         ];
       };
 
+      checks.x86_64-linux.faasd = with import (nixpkgs + "/nixos/lib/testing-python.nix") { system = "x86_64-linux"; };
+        simpleTest {
+          name = "faasd";
+
+          nodes.faasd = { pkgs, ... }:
+            let
+              images = {
+                figlet = pkgs.dockerTools.pullImage {
+                  imageName = "ghcr.io/openfaas/figlet";
+                  imageDigest = "sha256:98b7e719cabe654a7d2f8ff0f3c11294ef737a1f1e4eeef7321277420dfebe8d";
+                  finalImageTag = "latest";
+                  sha256 = "sha256-leYfLXQ4cCvPOudU82UaV9BkUIA+W6YvM0zx3BlyCjw=";
+                };
+
+                nodeInfo = pkgs.dockerTools.pullImage {
+                  imageName = "ghcr.io/openfaas/nodeinfo";
+                  imageDigest = "sha256:018db1b62c35acf63ff79be5e252128b2477c134421fe1322c159438edf6bcaf";
+                  finalImageTag = "stable";
+                  sha256 = "sha256-1hOPmt9fKdQUPokVhx9C62XYYC9iZ++QVI/iEb5+/Hk=";
+                };
+              };
+            in
+            {
+              imports = [ faasdServer ];
+
+              services.faasd = {
+                seedCoreImages = true;
+                seedDockerImages = [
+                  {
+                    namespace = "openfaas-fn";
+                    imageFile = images.figlet;
+                  }
+                  {
+                    namespace = "openfaas-fn";
+                    imageFile = images.nodeInfo;
+                  }
+                ];
+                pullPolicy = "IfNotPresent";
+                # Use local DNS server.
+                nameserver = "127.0.0.1";
+              };
+
+              # Start local DNS server. Required by faasd to function when running
+              # without internet connection.
+              services.coredns.enable = true;
+            };
+          testScript =
+            ''
+              # Wait until faasd can receive HTTP requests
+              faasd.wait_for_job("faasd-provider")
+              faasd.wait_for_job("faasd")
+              faasd.wait_for_open_port(8080)
+
+              with subtest("login to faasd"):
+                faasd.succeed(
+                  "cat /var/lib/faasd/secrets/basic-auth-password | faas-cli login --password-stdin")
+
+              with subtest("deploy and invoke functions"):
+                faasd.succeed("faas-cli deploy --image ghcr.io/openfaas/figlet:latest --name figlet")
+                faasd.succeed("echo faasd | faas-cli invoke figlet")
+                faasd.succeed("echo faasd | faas-cli invoke figlet --async")
+            '';
+        };
+
       templates = {
         hc-bootstrap = {
           path = ./bootstrap/hetzner-cloud-terraform;
@@ -192,6 +256,8 @@
           queue-worker-image = pkgs.openfaas-images.queue-worker;
           nats-image = pkgs.openfaas-images.nats;
           prometheus-image = pkgs.openfaas-images.prometheus;
+
+          faasd-test = self.checks.${system}.faasd;
         };
 
         devShells.faasd-vm = pkgs.mkShell {
