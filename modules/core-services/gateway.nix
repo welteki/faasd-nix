@@ -71,10 +71,9 @@ in
       ];
       cap_add = [ "CAP_NET_RAW" ];
       depends_on = [
-        "basic-auth-plugin"
         "nats"
         "prometheus"
-      ];
+      ] ++ lib.optionals cfg.basicAuth.enable [ "basic-auth-plugin" ];
       ports = [
         "8080:8080"
       ];

@@ -1,6 +1,9 @@
-{ ... }:
+{ config, lib, ... }:
+let
+  cfg = config.services.faasd;
+in
 {
-  config.services.faasd.containers = {
+  config.services.faasd.containers = lib.mkIf cfg.basicAuth.enable {
     basic-auth-plugin = {
       image = "ghcr.io/openfaas/basic-auth:0.21.0";
       environment = {
