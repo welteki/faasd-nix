@@ -5,6 +5,9 @@ let
   inherit (types) package bool str attrsOf listOf submodule nullOr;
 
   cfg = config.services.faasd;
+
+  boolToString = e: if e then "true" else "false";
+
   service = import ./service.nix;
 
   dockerComposeAttrs = {
@@ -31,6 +34,11 @@ in
     };
 
     basicAuth = {
+      enable = mkOption {
+        description = "Enable basicAuth";
+        type = bool;
+        default = true;
+      };
       user = mkOption {
         type = str;
         default = "admin";
@@ -122,7 +130,7 @@ in
           MemoryLimit = "500M";
           Restart = "on-failure";
           RestartSec = "10s";
-          Environment = [ "basic_auth=true" "secret_mount_path=/var/lib/faasd/secrets" ];
+          Environment = [ "basic_auth=${boolToString cfg.basicAuth.enable}" "secret_mount_path=/var/lib/faasd/secrets" ];
           ExecStart = "${cfg.package}/bin/faasd provider";
           WorkingDirectory = "/var/lib/faasd-provider";
         };

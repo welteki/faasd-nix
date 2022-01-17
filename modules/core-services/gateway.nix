@@ -8,12 +8,6 @@ let
   boolToString = e: if e then "true" else "false";
 
   gatewayOpts = {
-    basicAuth = mkOption {
-      description = "Enable embedded basic auth on the /system and /ui endpoints.";
-      type = bool;
-      default = true;
-    };
-
     writeTimeout = mkOption {
       description = "HTTP timeout for writing a response body from your function (in seconds)";
       type = int;
@@ -48,7 +42,7 @@ in
     services.faasd.containers.gateway = {
       image = "ghcr.io/openfaas/gateway:0.21.0";
       environment = {
-        basic_auth = boolToString cfg.gateway.basicAuth;
+        basic_auth = boolToString cfg.basicAuth.enable;
         functions_provider_url = "http://faasd-provider:8081/";
         direct_functions = "false";
         read_timeout = cfg.gateway.readTimeout;

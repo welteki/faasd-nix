@@ -4,6 +4,8 @@ let
 
   cfg = config.services.faasd;
 
+  boolToString = e: if e then "true" else "false";
+
   mkContainer =
     { natsChannel ? "faas-request"
     , maxInflight ? 1
@@ -18,8 +20,8 @@ let
         faas_gateway_address = "gateway";
         ack_wait = "5m5s";
         max_inflight = maxInflight;
-        write_debug = builtins.toString writeDebug;
-        basic_auth = "true";
+        write_debug = boolToString writeDebug;
+        basic_auth = boolToString cfg.basicAuth.enable;
         secret_mount_path = "/run/secrets";
       };
       volumes = [
