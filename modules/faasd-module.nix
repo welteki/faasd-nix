@@ -1,60 +1,61 @@
 { config, lib, pkgs, ... }:
 
-with lib;
 let
-  importYAML = f:
-    let
-      jsonFile = pkgs.runCommand "in.json"
-        {
-          nativeBuildInputs = [ pkgs.remarshal ];
-        } ''
-        yaml2json < "${f}" > "$out"
-      '';
-    in
-    builtins.fromJSON (builtins.readFile jsonFile);
+  inherit (lib) mkOption mkIf mkMerge types concatMapStrings;
+  inherit (types) package bool str attrsOf listOf submodule nullOr;
 
   cfg = config.services.faasd;
 
-  coreServices = importYAML "${cfg.package}/installation/docker-compose.yaml";
+  boolToString = e: if e then "true" else "false";
+
+  service = import ./service.nix;
+
   dockerComposeAttrs = {
-    version = coreServices.version;
-    services = cfg.containers;
+    version = "3.7";
+    services = lib.mapAttrs (k: c: c.out) cfg.containers;
   };
 
-  dockerComposeYaml = pkgs.runCommand "docker-compose.yaml" { nativeBuildInputs = [ pkgs.jq ]; } ''
-    jq 'walk( if type == "object" then with_entries(select(.value != null)) else . end)' > $out <<EOL
-      ${builtins.toJSON dockerComposeAttrs}
-    EOL
-  '';
+  dockerComposeYaml = pkgs.writeText "docker-compose.yaml" (builtins.toJSON dockerComposeAttrs);
 in
 {
-  imports = [ ./services.nix ];
+  imports = import ./core-services;
 
   options.services.faasd = {
     enable = mkOption {
-      type = types.bool;
+      type = bool;
       default = false;
       description = "Lightweight faas engine";
     };
 
     package = mkOption {
       description = "Faasd package to use.";
-      type = types.package;
+      type = package;
       default = pkgs.faasd;
     };
 
     basicAuth = {
+      enable = mkOption {
+        description = "Enable basicAuth";
+        type = bool;
+        default = true;
+      };
       user = mkOption {
-        type = types.str;
+        type = str;
         default = "admin";
         description = "Basic-auth user";
       };
       passwordFile = mkOption {
-        type = types.nullOr types.str;
+        type = nullOr str;
         default = null;
         description = "Path to file containing password";
         example = "/etc/nixos/faasd-basic-auth-password";
       };
+    };
+
+    containers = mkOption {
+      default = { };
+      type = attrsOf (submodule service);
+      description = "OCI (Docker) containers to run as additional services on faasd.";
     };
 
     namespaces = mkOption {
@@ -76,8 +77,6 @@ in
       boot.kernel.sysctl = {
         "net.ipv4.conf.all.forwarding" = 1;
       };
-
-      services.faasd.containers = coreServices.services;
 
       virtualisation.containerd.enable = true;
 
@@ -131,7 +130,7 @@ in
           MemoryLimit = "500M";
           Restart = "on-failure";
           RestartSec = "10s";
-          Environment = [ "basic_auth=true" "secret_mount_path=/var/lib/faasd/secrets" ];
+          Environment = [ "basic_auth=${boolToString cfg.basicAuth.enable}" "secret_mount_path=/var/lib/faasd/secrets" ];
           ExecStart = "${cfg.package}/bin/faasd provider";
           WorkingDirectory = "/var/lib/faasd-provider";
         };
