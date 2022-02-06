@@ -24,15 +24,16 @@
       "inputs": {
         "faasd-src": "faasd-src",
         "flake-compat": "flake-compat_2",
+        "nixos-shell": "nixos-shell",
         "nixpkgs": "nixpkgs_2",
         "utils": "utils_2"
       },
       "locked": {
-        "lastModified": 1633606286,
-        "narHash": "sha256-f6Ia/oQRQOQ3Z4CF3kSUJWmJyU3TtNoX1CtWxUF17cs=",
+        "lastModified": 1642410897,
+        "narHash": "sha256-DtaDy6uYprzkt1gZS/8tvI2HJckZWOLNf3gck9WXjrU=",
         "owner": "welteki",
         "repo": "faasd-nix",
-        "rev": "b9f8c5f7acfa0f7dca4002af315bb01c8c566bc4",
+        "rev": "bfc0233be38f6326798d383d0ebcd75dbc244750",
         "type": "github"
       },
       "original": {
@@ -44,13 +45,13 @@
     "faasd-src": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-UuHZIhFW2VDlsVmtHIP1HdbQ+KIPypNx7vUVZnC+bCk=",
+        "narHash": "sha256-bRvlnbpVe76UsE4BDNiyoE7SB8Q3opPj/Fx5oU2REOM=",
         "type": "tarball",
-        "url": "https://github.com/openfaas/faasd/archive/refs/tags/0.14.2.tar.gz"
+        "url": "https://github.com/openfaas/faasd/archive/refs/tags/0.14.4.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://github.com/openfaas/faasd/archive/refs/tags/0.14.2.tar.gz"
+        "url": "https://github.com/openfaas/faasd/archive/refs/tags/0.14.4.tar.gz"
       }
     },
     "flake-compat": {
@@ -85,6 +86,28 @@
         "type": "github"
       }
     },
+    "nixos-shell": {
+      "inputs": {
+        "nixpkgs": [
+          "faasd",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1638785136,
+        "narHash": "sha256-B1M3PVZEg9HIHSjbYSae6+u2w++Xt3oXoodIvG61zzg=",
+        "owner": "welteki",
+        "repo": "nixos-shell",
+        "rev": "32a8bd8ba3df60863d1bd66868c10e721c9928d5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "welteki",
+        "ref": "improve-flake-support",
+        "repo": "nixos-shell",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1632086102,
@@ -103,18 +126,17 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1624522661,
-        "narHash": "sha256-BjkxYyGQYck5muCpPMfCtEQv/wRmD4kVEE7tiAQOS+Y=",
+        "lastModified": 1638887115,
+        "narHash": "sha256-emjtIeqyJ84Eb3X7APJruTrwcfnHQKs55XGljj62prs=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "0b8b127125e5271f5c8636680b6fe274844aaa9d",
+        "rev": "1bd4bbd49bef217a3d1adea43498270d6e779d65",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
-        "ref": "nixos-21.05",
-        "repo": "nixpkgs",
-        "type": "github"
+        "id": "nixpkgs",
+        "ref": "nixos-21.11",
+        "type": "indirect"
       }
     },
     "nixpkgs_3": {
