@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
-  inherit (lib) mkOption types optionalAttrs;
-  inherit (types) listOf nullOr attrsOf str either int bool submodule;
+  inherit (lib) mkOption types optionalAttrs literalExpression;
+  inherit (types) listOf nullOr attrsOf str either int bool submodule package;
 
   link = url: text:
     ''link:${url}[${text}]'';
@@ -18,6 +18,18 @@ in
     image = mkOption {
       type = str;
       description = dockerComposeRef "image";
+    };
+
+    imageFile = mkOption {
+      type = nullOr package;
+      default = null;
+      description = ''
+        Path to an image file to load instead of pulling from a registry.
+        If defined, do not pull from registry.
+        You still need to set the <literal>image</literal> attribute, as it
+        will be used as the image name for faasd to start a container.
+      '';
+      example = literalExpression "pkgs.dockerTools.buildImage {...};";
     };
 
     depends_on = mkOption {

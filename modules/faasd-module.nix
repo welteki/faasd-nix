@@ -2,7 +2,7 @@
 
 let
   inherit (lib) mkOption mkIf mkMerge types concatMapStrings;
-  inherit (types) package bool str attrsOf listOf submodule nullOr;
+  inherit (types) package bool str attrsOf listOf enum submodule nullOr;
 
   cfg = config.services.faasd;
 
@@ -16,6 +16,21 @@ let
   };
 
   dockerComposeYaml = pkgs.writeText "docker-compose.yaml" (builtins.toJSON dockerComposeAttrs);
+
+  seedOpts = {
+    options = {
+      namespace = mkOption {
+        description = "Namespace to use when seeding image.";
+        type = str;
+        default = "openfaas";
+      };
+
+      imageFile = mkOption {
+        description = "Path to the image file.";
+        type = package;
+      };
+    };
+  };
 in
 {
   imports = import ./core-services;
@@ -68,6 +83,32 @@ in
       '';
       example = [ "dev" ];
     };
+
+    seedCoreImages = mkOption {
+      description = "Seed faasd core images";
+      type = bool;
+      default = false;
+    };
+
+    seedDockerImages = mkOption {
+      description = "List of docker images to preload on system";
+      default = [ ];
+      type = listOf (submodule seedOpts);
+    };
+
+    pullPolicy = mkOption {
+      description = ''
+        Set to "Always" to force a pull of images upon deployment, or "IfNotPresent" to try to use a cached image.
+      '';
+      type = enum [ "Always" "IfNotPresent" ];
+      default = "Always";
+    };
+
+    nameserver = mkOption {
+      description = "Nameserver to use";
+      type = str;
+      default = "8.8.8.8";
+    };
   };
 
   config = mkMerge [
@@ -79,6 +120,10 @@ in
       };
 
       virtualisation.containerd.enable = true;
+
+      # Seed images for containers that have imageFile attribute
+      services.faasd.seedDockerImages = lib.concatMap (image: [{ imageFile = image; }])
+        (lib.remove null (lib.catAttrs "imageFile" (lib.attrValues cfg.containers)));
 
       systemd.tmpfiles.rules = [
         "d /opt/cni/bin 0755 root root -"
@@ -109,7 +154,7 @@ in
           echo ${cfg.basicAuth.user} > /var/lib/faasd/secrets/basic-auth-user
 
           ln -fs "${cfg.package}/installation/prometheus.yml" "/var/lib/faasd/prometheus.yml"
-          ln -fs "${cfg.package}/installation/resolv.conf" "/var/lib/faasd/resolv.conf"
+          echo "nameserver ${cfg.nameserver}" > "/var/lib/faasd/resolv.conf"
         '';
 
         before = [ "faasd-provider.service" "faasd.service" ];
@@ -131,7 +176,7 @@ in
           Restart = "on-failure";
           RestartSec = "10s";
           Environment = [ "basic_auth=${boolToString cfg.basicAuth.enable}" "secret_mount_path=/var/lib/faasd/secrets" ];
-          ExecStart = "${cfg.package}/bin/faasd provider";
+          ExecStart = "${cfg.package}/bin/faasd provider --pull-policy ${cfg.pullPolicy}";
           WorkingDirectory = "/var/lib/faasd-provider";
         };
       };
@@ -171,6 +216,31 @@ in
         wantedBy = [ "multi-user.target" ];
         after = [ "containerd.service" ];
         requires = [ "containerd.service" ];
+
+        serviceConfig = {
+          Type = "oneshot";
+        };
+      };
+    })
+
+    (mkIf (cfg.seedDockerImages != [ ]) {
+      systemd.services.faasd-seed-images = {
+        description = "Seed faasd container images";
+        script = ''
+          # Seed container images
+          ${concatMapStrings (opts: ''
+            echo "Seeding container image: ${opts.imageFile}"
+            ${if (lib.hasSuffix "gz" opts.imageFile) then
+              ''${pkgs.gzip}/bin/zcat "${opts.imageFile}" | ${pkgs.containerd}/bin/ctr -n ${opts.namespace} image import -''
+            else
+              ''${pkgs.coreutils}/bin/cat "${opts.imageFile}" | ${pkgs.containerd}/bin/ctr -n ${opts.namespace} image import -''
+            }
+          '') cfg.seedDockerImages}
+        '';
+
+        before = [ "faasd.service" ];
+        wantedBy = [ "multi-user.target" ];
+        after = [ "containerd.service" ];
 
         serviceConfig = {
           Type = "oneshot";
