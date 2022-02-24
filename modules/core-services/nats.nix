@@ -20,8 +20,16 @@ in
         "/nats-streaming-server"
         "-m"
         "8222"
-        "--store=memory"
+        "--store=file"
+        "--dir=/nats"
         "--cluster_id=faas-cluster"
+      ];
+      volumes = [
+        {
+          type = "bind";
+          source = "./nats";
+          target = "/nats";
+        }
       ];
     };
   };
