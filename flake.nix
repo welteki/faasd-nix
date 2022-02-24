@@ -7,7 +7,7 @@
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
     faasd-src = {
-      url = "https://github.com/openfaas/faasd/archive/refs/tags/0.14.4.tar.gz";
+      url = "github:openfaas/faasd?ref=0.14.4";
       flake = false;
     };
     nixos-shell.url = "github:welteki/nixos-shell/improve-flake-support";
@@ -16,8 +16,9 @@
 
   outputs = { self, nixpkgs, utils, faasd-src, ... }@inputs:
     let
-      faasdVersion = "0.14.4";
-      faasdRev = "8fbdd1a461196520de75fe35ac0b5bdda6403ac7";
+      faasdVersion = lock.nodes.faasd-src.original.ref;
+      faasdRev = lock.nodes.faasd-src.locked.rev;
+      lock = builtins.fromJSON (builtins.readFile ./flake.lock);
 
       supportedSystems = [
         "x86_64-linux"
