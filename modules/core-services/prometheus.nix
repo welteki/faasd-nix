@@ -23,6 +23,11 @@ in
           source = "./prometheus.yml";
           target = "/etc/prometheus/prometheus.yml";
         }
+        {
+          type = "bind";
+          source = "./prometheus";
+          target = "/prometheus";
+        }
       ];
       cap_add = [ "CAP_NET_RAW" ];
       ports = [
