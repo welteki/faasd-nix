@@ -7,7 +7,7 @@
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
     faasd-src = {
-      url = "github:openfaas/faasd?ref=0.15.0-rc3";
+      url = "github:openfaas/faasd?ref=0.16.0-rc1";
       flake = false;
     };
     nixos-shell.url = "github:welteki/nixos-shell/improve-flake-support";
@@ -47,27 +47,42 @@
         in
         {
           faasd-containerd = prev.containerd.overrideAttrs (old: rec {
-            version = "1.5.4";
+            version = "1.6.2";
 
             src = fetchFromGitHub {
               owner = "containerd";
               repo = "containerd";
               rev = "v${version}";
-              sha256 = "sha256-VV1cxA8tDRiPDxKV8OGu3T7sgutmyL+VPNqTeFcVjJA=";
+              sha256 = "sha256-l/9jOvZ4nn/wy+XPRoT1lojfGvPEXhPz2FJjLpZ/EE8=";
             };
+
+            outputs = lib.remove "man" old.outputs;
+
+            buildPhase = ''
+              runHook preBuild
+              patchShebangs .
+              make binaries "VERSION=v${version}" "REVISION=${src.rev}"
+              runHook postBuild
+            '';
+
+            installPhase = ''
+              runHook preInstall
+              install -Dm555 bin/* -t $out/bin
+              installShellCompletion --bash contrib/autocomplete/ctr
+              installShellCompletion --zsh --name _ctr contrib/autocomplete/zsh_autocomplete
+              runHook postInstall
+            '';
           });
 
           faasd-cni-plugins = prev.cni-plugins.overrideAttrs (old: rec {
-            version = "0.8.5";
+            version = "0.9.1";
 
             src = fetchFromGitHub {
               owner = "containernetworking";
               repo = "plugins";
               rev = "v${version}";
-              sha256 = "sha256-8UZ13e7h9VuYFWd/MaqtZ2rUIEw5xwOVUe02YO++iJ0=";
+              sha256 = "sha256-n+OtFXgFmW0xsGEtC6ua0qjdsJSbEjn08mAl5Z51Kp8=";
             };
-
-            subPackages = lib.remove "plugins/meta/vrf" old.subPackages;
           });
 
           containerd = final.faasd-containerd;
