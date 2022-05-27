@@ -6,9 +6,9 @@ let
 
   basic-auth-plugin = pullImage {
     imageName = "ghcr.io/openfaas/basic-auth";
-    imageDigest = "sha256:1785bd63d9062f8e90c65cefc07c3264855e5d0541ee766044cfdd6d66ccd580";
-    finalImageTag = "0.21.0";
-    sha256 = "sha256-en7s+NT4ByLeiT9oSIPjVT9ireXJL+n46b3vwgteJO0=";
+    imageDigest = "sha256:e99c385f248ce9a6569bf262e3480ddbf317cd5982243fcc229ee1766d24eb5a";
+    finalImageTag = "0.21.4";
+    sha256 = "sha256-LyXZcK7bmc1B/QNdgvfNiL5t/5IpvnLKtFokBxRIMa4=";
   };
 in
 {

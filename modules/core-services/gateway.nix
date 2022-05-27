@@ -10,9 +10,9 @@ let
 
   gateway = pullImage {
     imageName = "ghcr.io/openfaas/gateway";
-    imageDigest = "sha256:708499af81e9600db32bff9151326a2ad54f5985d7c56fbed2fcddf8a879914e";
-    finalImageTag = "0.21.3";
-    sha256 = "sha256-gZU1h4Vb4wQ8f63S4n6k4flpkLH67J7/mJb3+Kv/yuo=";
+    imageDigest = "sha256:538cca5c2e569856dd21d348a9d265c5e55a8de12ff8d023f2940d8dab606be6";
+    finalImageTag = "0.21.4";
+    sha256 = "sha256-UqsI+uj2077n/XiE1BZpzccoKmMiu2g2F22E6G7ue2M=";
   };
 
   gatewayOpts = {
