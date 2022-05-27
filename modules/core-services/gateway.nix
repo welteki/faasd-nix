@@ -8,13 +8,6 @@ let
 
   boolToString = e: if e then "true" else "false";
 
-  gateway = pullImage {
-    imageName = "ghcr.io/openfaas/gateway";
-    imageDigest = "sha256:538cca5c2e569856dd21d348a9d265c5e55a8de12ff8d023f2940d8dab606be6";
-    finalImageTag = "0.21.4";
-    sha256 = "sha256-UqsI+uj2077n/XiE1BZpzccoKmMiu2g2F22E6G7ue2M=";
-  };
-
   gatewayOpts = {
     writeTimeout = mkOption {
       description = "HTTP timeout for writing a response body from your function (in seconds)";
@@ -49,7 +42,7 @@ in
   config = {
     services.faasd.containers.gateway = {
       image = "ghcr.io/openfaas/gateway:0.21.0";
-      imageFile = mkIf cfg.seedCoreImages gateway;
+      imageFile = mkIf cfg.seedCoreImages pkgs.openfaas-images.gateway;
       environment = {
         basic_auth = boolToString cfg.basicAuth.enable;
         functions_provider_url = "http://faasd-provider:8081/";
