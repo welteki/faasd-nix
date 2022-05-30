@@ -14,6 +14,9 @@
     nixos-shell.inputs.nixpkgs.follows = "nixpkgs";
   };
 
+  nixConfig.extra-substituters = [ "https://welteki.cachix.org" ];
+  nixConfig.extra-trusted-public-keys = [ "welteki.cachix.org-1:zb0txiNEbjq9Fx7svp4LhTgFIQHKSa5ESi7QlLFjjQY=" ];
+
   outputs = { self, nixpkgs, utils, faasd-src, ... }@inputs:
     let
       faasdVersion = lock.nodes.faasd-src.original.ref;
