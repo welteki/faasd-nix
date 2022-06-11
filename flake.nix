@@ -129,9 +129,9 @@
 
             gateway = pullImage {
               imageName = "ghcr.io/openfaas/gateway";
-              imageDigest = "sha256:538cca5c2e569856dd21d348a9d265c5e55a8de12ff8d023f2940d8dab606be6";
-              finalImageTag = "0.21.4";
-              sha256 = "sha256-UqsI+uj2077n/XiE1BZpzccoKmMiu2g2F22E6G7ue2M=";
+              imageDigest = "sha256:57fb2e0034e879264e1dc0f8f4b6af0b803eea3a3b2e52037c0284293e473d44";
+              finalImageTag = "0.22.0";
+              sha256 = "sha256-3zdzINIuiF9jomhy9B0xqc6ohS49/WdOlJqjJXk38IQ=";
             };
 
             queue-worker = pullImage {
