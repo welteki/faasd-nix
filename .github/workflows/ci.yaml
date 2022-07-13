@@ -23,7 +23,7 @@ jobs:
           nix eval --json .#faasd-containerd | jq -r | cachix push welteki
       - name: Build cni-plugin 🔧
         run: |
-          nix build -L .#faasd-cni-plugin
+          nix build -L .#faasd-cni-plugins
           nix eval --json .#faasd-cni-plugins | jq -r | cachix push welteki
       - name: Build OpenFaaS core images 🔧
         run: |
