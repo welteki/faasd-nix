@@ -61,23 +61,6 @@
               rev = "v${version}";
               sha256 = "sha256-l/9jOvZ4nn/wy+XPRoT1lojfGvPEXhPz2FJjLpZ/EE8=";
             };
-
-            outputs = lib.remove "man" old.outputs;
-
-            buildPhase = ''
-              runHook preBuild
-              patchShebangs .
-              make binaries "VERSION=v${version}" "REVISION=${src.rev}"
-              runHook postBuild
-            '';
-
-            installPhase = ''
-              runHook preInstall
-              install -Dm555 bin/* -t $out/bin
-              installShellCompletion --bash contrib/autocomplete/ctr
-              installShellCompletion --zsh --name _ctr contrib/autocomplete/zsh_autocomplete
-              runHook postInstall
-            '';
           });
 
           faasd-cni-plugins = prev.cni-plugins.overrideAttrs (old: rec {
