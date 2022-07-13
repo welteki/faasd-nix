@@ -15,19 +15,16 @@ jobs:
           skipPush: true
       - name: Build faasd 🔧
         run: |
-          nix build .#faasd --json \
-          | jq -r '.[].outputs | to_entries[].value' \
-          | cachix push welteki
+          nix build -L .#faasd
+          nix eval --json .#faasd | jq -r | cachix push welteki
       - name: Build containerd 🔧
         run: |
-          nix build .#faasd-containerd --json \
-          | jq -r '.[].outputs | to_entries[].value' \
-          | cachix push welteki
+          nix build -L .#faasd-containerd
+          nix eval --json .#faasd-containerd | jq -r | cachix push welteki
       - name: Build cni-plugin 🔧
         run: |
-          nix build .#faasd-cni-plugins --json \
-          | jq -r '.[].outputs | to_entries[].value' \
-          | cachix push welteki
+          nix build -L .#faasd-cni-plugin
+          nix eval --json .#faasd-cni-plugins | jq -r | cachix push welteki
       - name: Build OpenFaaS core images 🔧
         run: |
           nix build .#basic-auth-image \
