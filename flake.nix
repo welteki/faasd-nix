@@ -7,7 +7,7 @@
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
     faasd-src = {
-      url = "github:openfaas/faasd?ref=0.16.1";
+      url = "github:openfaas/faasd?ref=0.16.2";
       flake = false;
     };
     nixos-shell.url = "github:welteki/nixos-shell/improve-flake-support";
