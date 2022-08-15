@@ -25,6 +25,7 @@
 
       supportedSystems = [
         "x86_64-linux"
+        "aarch64-linux"
       ];
 
       # NixOS configuration used for VM tests.

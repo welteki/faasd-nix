@@ -7,7 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: docker/setup-qemu-action@v2
       - uses: cachix/install-nix-action@v21
+        with:
+          extra_nix_config: |
+            extra-platforms = aarch64-linux
       - uses: cachix/cachix-action@v12
         with:
           name: welteki
@@ -17,14 +21,20 @@ jobs:
         run: |
           nix build -L .#faasd
           nix eval --json .#faasd | jq -r | cachix push welteki
+          nix build -L .#packages.aarch64-linux.faasd
+          nix eval --json .#packages.aarch64-linux.faasd | jq -r | cachix push welteki
       - name: Build containerd 🔧
         run: |
           nix build -L .#faasd-containerd
           nix eval --json .#faasd-containerd | jq -r | cachix push welteki
+          nix build -L .#packages.aarch64-linux.faasd-containerd
+          nix eval --json .#packages.aarch64-linux.faasd-containerd | jq -r | cachix push welteki
       - name: Build cni-plugin 🔧
         run: |
           nix build -L .#faasd-cni-plugins
           nix eval --json .#faasd-cni-plugins | jq -r | cachix push welteki
+          nix build -L .#packages.aarch64-linux.faasd-cni-plugins
+          nix eval --json .#packages.aarch64-linux.faasd-cni-plugins | jq -r | cachix push welteki
       - name: Build OpenFaaS core images 🔧
         run: |
           nix build .#gateway-image \
