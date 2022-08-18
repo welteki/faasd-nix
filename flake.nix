@@ -7,7 +7,7 @@
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
     faasd-src = {
-      url = "github:openfaas/faasd?ref=0.16.2";
+      url = "github:openfaas/faasd?ref=0.16.5";
       flake = false;
     };
     nixos-shell.url = "github:welteki/nixos-shell/improve-flake-support";
@@ -53,7 +53,7 @@
         in
         {
           faasd-containerd = prev.containerd.overrideAttrs (old: rec {
-            version = "1.6.4";
+            version = "1.6.8";
 
             src = fetchFromGitHub {
               owner = "containerd";
