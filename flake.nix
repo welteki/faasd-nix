@@ -10,7 +10,7 @@
       url = "github:openfaas/faasd?ref=0.16.5";
       flake = false;
     };
-    nixos-shell.url = "github:welteki/nixos-shell/improve-flake-support";
+    nixos-shell.url = "github:Mic92/nixos-shell";
     nixos-shell.inputs.nixpkgs.follows = "nixpkgs";
   };
 
@@ -36,6 +36,9 @@
           virtualisation.memorySize = 1024;
 
           services.faasd.enable = true;
+
+          environment.systemPackages = [ pkgs.faas-cli ];
+          system.stateVersion = "22.05";
         };
     in
     {
@@ -145,9 +148,13 @@
         nixpkgs.overlays = [ self.overlay ];
       };
 
-      nixosConfigurations.faasd-vm = inputs.nixos-shell.lib.nixosShellSystem {
+      nixosConfigurations.faasd-vm = nixpkgs.lib.makeOverridable nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = [ faasdServer (args: { nixos-shell.mounts.mountHome = false; }) ];
+        modules = [
+          inputs.nixos-shell.nixosModules.nixos-shell
+          faasdServer
+          (args: { nixos-shell.mounts.mountHome = false; })
+        ];
       };
 
       templates = {
@@ -163,8 +170,6 @@
           inherit system;
           overlays = [ self.overlay ];
         };
-
-        nixos-shell = inputs.nixos-shell.defaultPackage.${system};
       in
       {
         packages = {
@@ -181,14 +186,14 @@
 
         devShells.faasd-vm = pkgs.mkShell {
           buildInputs = [
-            nixos-shell
+            pkgs.nixos-shell
             pkgs.faas-cli
           ];
         };
 
         devShell = pkgs.mkShell {
           buildInputs = [
-            nixos-shell
+            pkgs.nixos-shell
             pkgs.faas-cli
 
             pkgs.nixpkgs-fmt
