@@ -7,7 +7,7 @@ in
 {
   config.services.faasd.containers = lib.mkIf cfg.basicAuth.enable {
     basic-auth-plugin = {
-      image = "ghcr.io/openfaas/basic-auth:0.21.0";
+      image = "ghcr.io/openfaas/basic-auth:0.21.4";
       imageFile = lib.mkIf cfg.seedCoreImages pkgs.openfaas-images.basic-auth;
       environment = {
         port = 8080;
