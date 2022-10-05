@@ -7,7 +7,7 @@
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
     faasd-src = {
-      url = "github:openfaas/faasd?ref=0.16.5";
+      url = "github:openfaas/faasd?ref=0.16.7";
       flake = false;
     };
     nixos-shell.url = "github:Mic92/nixos-shell";
@@ -108,37 +108,37 @@
           openfaas-images = {
             basic-auth = pullImage {
               imageName = "ghcr.io/openfaas/basic-auth";
-              imageDigest = "sha256:e99c385f248ce9a6569bf262e3480ddbf317cd5982243fcc229ee1766d24eb5a";
-              finalImageTag = "0.21.4";
-              sha256 = "sha256-LyXZcK7bmc1B/QNdgvfNiL5t/5IpvnLKtFokBxRIMa4=";
+              imageDigest = "sha256:43715369a226b4fb32ba37c7ebc67d79db943581a92a02ed198846c62090a023";
+              finalImageTag = "0.25.2";
+              sha256 = "sha256-THPqoviRmPFq1VBAk9RGSUXREbolVHOPEEJDfaXjS+o=";
             };
 
             gateway = pullImage {
               imageName = "ghcr.io/openfaas/gateway";
-              imageDigest = "sha256:57fb2e0034e879264e1dc0f8f4b6af0b803eea3a3b2e52037c0284293e473d44";
-              finalImageTag = "0.22.0";
-              sha256 = "sha256-3zdzINIuiF9jomhy9B0xqc6ohS49/WdOlJqjJXk38IQ=";
+              imageDigest = "sha256:f9ecfab4c9aefe0185b755edb142710fdc037809c1cad19e2d569d638503ccc7";
+              finalImageTag = "0.25.2";
+              sha256 = "sha256-ByJedI/oJVVh6PjF2B07Ptiyjbcuzcq9dx7N4PsStDM=";
             };
 
             queue-worker = pullImage {
               imageName = "ghcr.io/openfaas/queue-worker";
-              imageDigest = "sha256:dd69cc3d77c2e06df54ed2dddea384b6defc51ec35763a5ed377548fd30c6831";
-              finalImageTag = "0.12.2";
-              sha256 = "sha256-Rq5xPkEfkd0NrDcIb5YY4SfAsYlqvQxN7yXx0/01lJs=";
+              imageDigest = "sha256:a0cfce6ca30c02f2f5f11ec12e978c33e5cbe10019cce10b4a8b38404eee3913";
+              finalImageTag = "0.13.1";
+              sha256 = "sha256-A8yX0FqMXpwilA+DrUbPt9PuMGM/KCnN50rm4IexFwk=";
             };
 
             nats = pullImage {
               imageName = "docker.io/library/nats-streaming";
-              imageDigest = "sha256:ba1be2cd913a1e9f1ffc9445e5c04c169db333819beb7204deb3bc7c29fde5a8";
-              finalImageTag = "0.22.0";
-              sha256 = "sha256-hUY3GAyAveHnpxHmlX9jkKQG8vzgJfuEqeNZB4bByqU=";
+              imageDigest = "sha256:87746b2f927452b109461f56e64e379041225cd9c1835458ea1a629343d8b2d3";
+              finalImageTag = "0.24.6";
+              sha256 = "sha256-N8DHpzxOIWkAxHSnIoAG0XPuPJ5RfLLVPJOd82yeY0Q=";
             };
 
             prometheus = pullImage {
               imageName = "docker.io/prom/prometheus";
-              imageDigest = "sha256:907e20b3b0f8b0a76a33c088fe9827e8edc180e874bd2173c27089eade63d8b8";
-              finalImageTag = "v2.14.0";
-              sha256 = "sha256-OTGGUOPgx2k2QPG+r5kj4slOXzzs3JUwvGoKWFW4BDw=";
+              imageDigest = "sha256:f2d994f9a7aae94636d4d3b0aca504f420488f70da7b0acef433eb0bf2fd71ef";
+              finalImageTag = "v2.38.0";
+              sha256 = "sha256-ZQ4ftIPYZ87itHP6LluEfJyvCdCYFP5AJaCf93ZolY4=";
             };
           };
         };
