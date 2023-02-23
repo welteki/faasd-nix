@@ -12,7 +12,7 @@ let
     , maxInflight ? 1
     , writeDebug ? false
     }: {
-      image = "ghcr.io/openfaas/queue-worker:0.12.2";
+      image = "ghcr.io/openfaas/queue-worker:0.13.3";
       imageFile = mkIf cfg.seedCoreImages pkgs.openfaas-images.queue-worker;
       environment = {
         faas_nats_address = "nats";

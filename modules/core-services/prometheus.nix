@@ -7,7 +7,7 @@ in
 {
   config.services.faasd.containers = {
     prometheus = {
-      image = "docker.io/prom/prometheus:v2.14.0";
+      image = "docker.io/prom/prometheus:v2.41.0";
       imageFile = lib.mkIf cfg.seedCoreImages pkgs.openfaas-images.prometheus;
       volumes = [
         {

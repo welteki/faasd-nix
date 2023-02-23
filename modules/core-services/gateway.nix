@@ -41,7 +41,7 @@ in
 
   config = {
     services.faasd.containers.gateway = {
-      image = "ghcr.io/openfaas/gateway:0.22.0";
+      image = "ghcr.io/openfaas/gateway:0.26.2";
       imageFile = mkIf cfg.seedCoreImages pkgs.openfaas-images.gateway;
       environment = {
         basic_auth = boolToString cfg.basicAuth.enable;
@@ -52,8 +52,6 @@ in
         upstream_timeout = cfg.gateway.upstreamTimeout;
         faas_nats_address = "nats";
         faas_nats_port = 4222;
-        auth_proxy_url = "http://basic-auth-plugin:8080/validate";
-        auth_proxy_pass_body = "false";
         secret_mount_path = "/run/secrets";
         scale_from_zero = boolToString cfg.gateway.scaleFormZero;
         function_namespace = "openfaas-fn";
@@ -75,7 +73,7 @@ in
       depends_on = [
         "nats"
         "prometheus"
-      ] ++ lib.optionals cfg.basicAuth.enable [ "basic-auth-plugin" ];
+      ];
       ports = [
         "8080:8080"
       ];

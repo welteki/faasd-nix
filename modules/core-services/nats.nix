@@ -7,7 +7,7 @@ in
 {
   config.services.faasd.containers = {
     nats = {
-      image = "docker.io/library/nats-streaming:0.22.0";
+      image = "docker.io/library/nats-streaming:0.25.3";
       imageFile = lib.mkIf cfg.seedCoreImages pkgs.openfaas-images.nats;
       command = [
         "/nats-streaming-server"

@@ -7,7 +7,7 @@
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
     faasd-src = {
-      url = "github:openfaas/faasd?ref=0.16.7";
+      url = "github:openfaas/faasd?ref=0.16.8-rc1";
       flake = false;
     };
     nixos-shell.url = "github:Mic92/nixos-shell";
@@ -42,7 +42,7 @@
         };
     in
     {
-      overlay = final: prev:
+      overlays.default = final: prev:
         let
           inherit (final)
             lib
@@ -106,46 +106,39 @@
           };
 
           openfaas-images = {
-            basic-auth = pullImage {
-              imageName = "ghcr.io/openfaas/basic-auth";
-              imageDigest = "sha256:43715369a226b4fb32ba37c7ebc67d79db943581a92a02ed198846c62090a023";
-              finalImageTag = "0.25.2";
-              sha256 = "sha256-THPqoviRmPFq1VBAk9RGSUXREbolVHOPEEJDfaXjS+o=";
-            };
-
             gateway = pullImage {
               imageName = "ghcr.io/openfaas/gateway";
-              imageDigest = "sha256:f9ecfab4c9aefe0185b755edb142710fdc037809c1cad19e2d569d638503ccc7";
-              finalImageTag = "0.25.2";
-              sha256 = "sha256-ByJedI/oJVVh6PjF2B07Ptiyjbcuzcq9dx7N4PsStDM=";
+              imageDigest = "sha256:9e9f1e97a9c1243ac3d92387679e55094a6cd6162fd28fff51a125bba8c5cfcc";
+              finalImageTag = "0.26.3";
+              sha256 = "sha256-tn5vaRHco+zdfWDOGrLkI/t8QU+7cPQYQuRX/pvsexI=";
             };
 
             queue-worker = pullImage {
               imageName = "ghcr.io/openfaas/queue-worker";
-              imageDigest = "sha256:a0cfce6ca30c02f2f5f11ec12e978c33e5cbe10019cce10b4a8b38404eee3913";
-              finalImageTag = "0.13.1";
-              sha256 = "sha256-A8yX0FqMXpwilA+DrUbPt9PuMGM/KCnN50rm4IexFwk=";
+              imageDigest = "sha256:50ba67a2d12b211975871871a5fb775c41a6123d96b2167941bfb70a8001781c";
+              finalImageTag = "0.13.3";
+              sha256 = "sha256-Aiw6eF2koBesafjPXiDBNjjNLYoOxxGXK9ScQW1mVDw=";
             };
 
             nats = pullImage {
               imageName = "docker.io/library/nats-streaming";
-              imageDigest = "sha256:87746b2f927452b109461f56e64e379041225cd9c1835458ea1a629343d8b2d3";
-              finalImageTag = "0.24.6";
-              sha256 = "sha256-N8DHpzxOIWkAxHSnIoAG0XPuPJ5RfLLVPJOd82yeY0Q=";
+              imageDigest = "sha256:1a8745712d00a54265c8552863b8d15a568b138368f4fcb090c075e361124c14";
+              finalImageTag = "0.25.3";
+              sha256 = "sha256-0TCAWZ2qwLlbTN+IE8BxvfYVqwnc6waTWjwbbMg6CwE=";
             };
 
             prometheus = pullImage {
               imageName = "docker.io/prom/prometheus";
-              imageDigest = "sha256:f2d994f9a7aae94636d4d3b0aca504f420488f70da7b0acef433eb0bf2fd71ef";
-              finalImageTag = "v2.38.0";
-              sha256 = "sha256-ZQ4ftIPYZ87itHP6LluEfJyvCdCYFP5AJaCf93ZolY4=";
+              imageDigest = "sha256:01d64f9e6638cf8d6f9cc3c4defa080431e8c726d73dc3997e218efee4ee1b78";
+              finalImageTag = "v2.41.0";
+              sha256 = "sha256-/E9iCIl2n2Wv1KSsyblQy57I2H8v7tmP3zim5taatr0=";
             };
           };
         };
 
       nixosModules.faasd = {
         imports = [ ./modules/faasd-module.nix ];
-        nixpkgs.overlays = [ self.overlay ];
+        nixpkgs.overlays = [ self.overlays.default ];
       };
 
       nixosConfigurations.faasd-vm = nixpkgs.lib.makeOverridable nixpkgs.lib.nixosSystem {
@@ -168,21 +161,19 @@
       let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ self.overlay ];
+          overlays = [ self.overlays.default ];
         };
       in
       {
         packages = {
+          default = pkgs.faasd;
           inherit (pkgs) faasd faasd-containerd faasd-cni-plugins;
 
-          basic-auth-image = pkgs.openfaas-images.basic-auth;
           gateway-image = pkgs.openfaas-images.gateway;
           queue-worker-image = pkgs.openfaas-images.queue-worker;
           nats-image = pkgs.openfaas-images.nats;
           prometheus-image = pkgs.openfaas-images.prometheus;
         };
-
-        defaultPackage = self.packages.${system}.faasd;
 
         devShells.faasd-vm = pkgs.mkShell {
           buildInputs = [
@@ -191,7 +182,7 @@
           ];
         };
 
-        devShell = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
           buildInputs = [
             pkgs.nixos-shell
             pkgs.faas-cli
