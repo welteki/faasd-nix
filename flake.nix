@@ -7,7 +7,7 @@
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
     faasd-src = {
-      url = "github:openfaas/faasd?ref=0.16.8-rc1";
+      url = "github:openfaas/faasd?ref=0.16.9";
       flake = false;
     };
     nixos-shell.url = "github:Mic92/nixos-shell";
@@ -56,14 +56,21 @@
         in
         {
           faasd-containerd = prev.containerd.overrideAttrs (old: rec {
-            version = "1.6.8";
+            version = "1.7.0";
 
             src = fetchFromGitHub {
               owner = "containerd";
               repo = "containerd";
               rev = "v${version}";
-              sha256 = "sha256-l/9jOvZ4nn/wy+XPRoT1lojfGvPEXhPz2FJjLpZ/EE8=";
+              sha256 = "sha256-OHgakSNqIbXYDC7cTw2fy0HlElQMilDbSD5SSjbYJhc=";
             };
+
+            buildPhase = ''
+              runHook preBuild
+              make binaries "VERSION=v${version}" "REVISION=${src.rev}"
+              runHook postBuild
+            '';
+
           });
 
           faasd-cni-plugins = prev.cni-plugins.overrideAttrs (old: rec {
