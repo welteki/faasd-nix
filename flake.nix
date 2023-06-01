@@ -2,7 +2,7 @@
   description = "A lightweight & portable faas engine";
 
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-22.11";
+    nixpkgs.url = "nixpkgs/nixos-23.05";
     utils.url = "github:numtide/flake-utils";
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
@@ -64,13 +64,6 @@
               rev = "v${version}";
               sha256 = "sha256-OHgakSNqIbXYDC7cTw2fy0HlElQMilDbSD5SSjbYJhc=";
             };
-
-            buildPhase = ''
-              runHook preBuild
-              make binaries "VERSION=v${version}" "REVISION=${src.rev}"
-              runHook postBuild
-            '';
-
           });
 
           faasd-cni-plugins = prev.cni-plugins.overrideAttrs (old: rec {
@@ -82,6 +75,25 @@
               rev = "v${version}";
               sha256 = "sha256-n+OtFXgFmW0xsGEtC6ua0qjdsJSbEjn08mAl5Z51Kp8=";
             };
+
+            subPackages = [
+              "plugins/ipam/dhcp"
+              "plugins/ipam/host-local"
+              "plugins/ipam/static"
+              "plugins/main/bridge"
+              "plugins/main/host-device"
+              "plugins/main/ipvlan"
+              "plugins/main/loopback"
+              "plugins/main/macvlan"
+              "plugins/main/ptp"
+              "plugins/main/vlan"
+              "plugins/meta/bandwidth"
+              "plugins/meta/firewall"
+              "plugins/meta/portmap"
+              "plugins/meta/sbr"
+              "plugins/meta/tuning"
+              "plugins/meta/vrf"
+            ];
           });
 
           containerd = final.faasd-containerd;
