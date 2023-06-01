@@ -27,8 +27,7 @@ jobs:
           nix eval --json .#faasd-cni-plugins | jq -r | cachix push welteki
       - name: Build OpenFaaS core images 🔧
         run: |
-          nix build .#basic-auth-image \
-            .#gateway-image \
+          nix build .#gateway-image \
             .#queue-worker-image \
             .#nats-image \
             .#prometheus-image
