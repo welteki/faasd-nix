@@ -41,7 +41,7 @@ in
 
   config = {
     services.faasd.containers.gateway = {
-      image = "ghcr.io/openfaas/gateway:0.26.2";
+      image = "ghcr.io/openfaas/gateway:0.26.3";
       imageFile = mkIf cfg.seedCoreImages pkgs.openfaas-images.gateway;
       environment = {
         basic_auth = boolToString cfg.basicAuth.enable;
