@@ -48,6 +48,16 @@ in
       default = pkgs.faasd;
     };
 
+    dockerComposeFile = mkOption {
+      description = ''
+        Path to docker-compose.yaml.
+
+        By setting this all options related to faasd services will be ignored and the docker-compose configuration will be used instead.
+      '';
+      type = nullOr str;
+      default = null;
+    };
+
     basicAuth = {
       enable = mkOption {
         description = "Enable basicAuth";
@@ -188,7 +198,11 @@ in
         path = [ pkgs.iptables ];
 
         preStart = ''
-          ln -fs "${dockerComposeYaml}" "/var/lib/faasd/docker-compose.yaml"
+          ${if (cfg.dockerComposeFile != null ) then 
+            ''ln -fs ${cfg.dockerComposeFile} /var/lib/faasd/docker-compose.yaml''
+          else
+            ''ln -fs ${dockerComposeYaml} /var/lib/faasd/docker-compose.yaml''
+          }
         '';
 
         serviceConfig = {
