@@ -3,16 +3,16 @@
     "faasd-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1679301657,
-        "narHash": "sha256-vk8K+3GdRJquFL7aYtUZxKLI7+0KAtZ89A6CNdfmvuQ=",
+        "lastModified": 1688733936,
+        "narHash": "sha256-/78fCqiJ8KXIu8whz8CARnwTLuxmfcCR8jIkmgP4pUI=",
         "owner": "openfaas",
         "repo": "faasd",
-        "rev": "e1d90bba609a55ca123d26e5b7e1ccfcfedf3e8f",
+        "rev": "57baf34f5ac06ce19aedccb047811cb5bd2aba60",
         "type": "github"
       },
       "original": {
         "owner": "openfaas",
-        "ref": "0.16.9",
+        "ref": "0.17.0",
         "repo": "faasd",
         "type": "github"
       }

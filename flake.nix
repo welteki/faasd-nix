@@ -7,7 +7,7 @@
     flake-compat.url = "github:edolstra/flake-compat";
     flake-compat.flake = false;
     faasd-src = {
-      url = "github:openfaas/faasd?ref=0.16.9";
+      url = "github:openfaas/faasd?ref=0.17.0";
       flake = false;
     };
     nixos-shell.url = "github:Mic92/nixos-shell";
@@ -27,7 +27,7 @@
         {
           gateway = {
             name = "ghcr.io/openfaas/gateway";
-            tag = "0.26.3";
+            tag = "0.26.4";
           };
           queue-worker = {
             name = "ghcr.io/openfaas/queue-worker";
@@ -35,11 +35,11 @@
           };
           nats = {
             name = "docker.io/library/nats-streaming";
-            tag = "0.25.3";
+            tag = "0.25.5";
           };
           prometheus = {
             name = "docker.io/prom/prometheus";
-            tag = "v2.41.0";
+            tag = "v2.45.0";
           };
         };
 
