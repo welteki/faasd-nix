@@ -2,7 +2,8 @@
 let
   inherit (lib) mkIf mkOption types;
   inherit (types) bool int;
-  inherit (pkgs.dockerTools) pullImage;
+
+  inherit (import ../../images.nix) gateway;
 
   cfg = config.services.faasd;
 
@@ -41,7 +42,7 @@ in
 
   config = {
     services.faasd.containers.gateway = {
-      image = "ghcr.io/openfaas/gateway:0.26.3";
+      image = "${gateway.imageName}:${gateway.finalImageTag}";
       imageFile = mkIf cfg.seedCoreImages pkgs.openfaas-images.gateway;
       environment = {
         basic_auth = boolToString cfg.basicAuth.enable;

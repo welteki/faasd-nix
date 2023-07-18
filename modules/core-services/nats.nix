@@ -1,13 +1,13 @@
 { config, pkgs, lib, ... }:
 let
-  inherit (pkgs.dockerTools) pullImage;
+  inherit (import ../../images.nix) nats;
 
   cfg = config.services.faasd;
 in
 {
   config.services.faasd.containers = {
     nats = {
-      image = "docker.io/library/nats-streaming:0.25.3";
+      image = "${nats.imageName}:${nats.finalImageTag}";
       imageFile = lib.mkIf cfg.seedCoreImages pkgs.openfaas-images.nats;
       command = [
         "/nats-streaming-server"

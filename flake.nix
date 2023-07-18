@@ -23,6 +23,26 @@
       faasdRev = lock.nodes.faasd-src.locked.rev;
       lock = builtins.fromJSON (builtins.readFile ./flake.lock);
 
+      images =
+        {
+          gateway = {
+            name = "ghcr.io/openfaas/gateway";
+            tag = "0.26.3";
+          };
+          queue-worker = {
+            name = "ghcr.io/openfaas/queue-worker";
+            tag = "0.13.3";
+          };
+          nats = {
+            name = "docker.io/library/nats-streaming";
+            tag = "0.25.3";
+          };
+          prometheus = {
+            name = "docker.io/prom/prometheus";
+            tag = "v2.41.0";
+          };
+        };
+
       supportedSystems = [
         "x86_64-linux"
       ];
@@ -53,6 +73,7 @@
             dockerTools;
 
           inherit (dockerTools) pullImage;
+          image-parameters = import ./images.nix;
         in
         {
           faasd-containerd = prev.containerd.overrideAttrs (old: rec {
@@ -124,34 +145,13 @@
             '';
           };
 
+          prefetch-images = import ./scripts/prefetch-images.nix images final;
+
           openfaas-images = {
-            gateway = pullImage {
-              imageName = "ghcr.io/openfaas/gateway";
-              imageDigest = "sha256:9e9f1e97a9c1243ac3d92387679e55094a6cd6162fd28fff51a125bba8c5cfcc";
-              finalImageTag = "0.26.3";
-              sha256 = "sha256-tn5vaRHco+zdfWDOGrLkI/t8QU+7cPQYQuRX/pvsexI=";
-            };
-
-            queue-worker = pullImage {
-              imageName = "ghcr.io/openfaas/queue-worker";
-              imageDigest = "sha256:50ba67a2d12b211975871871a5fb775c41a6123d96b2167941bfb70a8001781c";
-              finalImageTag = "0.13.3";
-              sha256 = "sha256-Aiw6eF2koBesafjPXiDBNjjNLYoOxxGXK9ScQW1mVDw=";
-            };
-
-            nats = pullImage {
-              imageName = "docker.io/library/nats-streaming";
-              imageDigest = "sha256:1a8745712d00a54265c8552863b8d15a568b138368f4fcb090c075e361124c14";
-              finalImageTag = "0.25.3";
-              sha256 = "sha256-0TCAWZ2qwLlbTN+IE8BxvfYVqwnc6waTWjwbbMg6CwE=";
-            };
-
-            prometheus = pullImage {
-              imageName = "docker.io/prom/prometheus";
-              imageDigest = "sha256:01d64f9e6638cf8d6f9cc3c4defa080431e8c726d73dc3997e218efee4ee1b78";
-              finalImageTag = "v2.41.0";
-              sha256 = "sha256-/E9iCIl2n2Wv1KSsyblQy57I2H8v7tmP3zim5taatr0=";
-            };
+            gateway = pullImage image-parameters.gateway;
+            queue-worker = pullImage image-parameters.queue-worker;
+            nats = pullImage image-parameters.nats;
+            prometheus = pullImage image-parameters.prometheus;
           };
         };
 
@@ -257,6 +257,7 @@
           nats-image = pkgs.openfaas-images.nats;
           prometheus-image = pkgs.openfaas-images.prometheus;
 
+          prefetch-images = pkgs.prefetch-images;
           faasd-test = self.checks.${system}.faasd;
         };
 

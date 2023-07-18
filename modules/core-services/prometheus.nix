@@ -1,13 +1,13 @@
 { config, pkgs, lib, ... }:
 let
-  inherit (pkgs.dockerTools) pullImage;
+  inherit (import ../../images.nix) prometheus;
 
   cfg = config.services.faasd;
 in
 {
   config.services.faasd.containers = {
     prometheus = {
-      image = "docker.io/prom/prometheus:v2.41.0";
+      image = "${prometheus.imageName}:${prometheus.finalImageTag}";
       imageFile = lib.mkIf cfg.seedCoreImages pkgs.openfaas-images.prometheus;
       volumes = [
         {

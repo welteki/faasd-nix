@@ -1,7 +1,8 @@
 { config, pkgs, lib, ... }:
 let
   inherit (lib) mkIf mkOption types;
-  inherit (pkgs.dockerTools) pullImage;
+
+  inherit (import ../../images.nix) queue-worker;
 
   cfg = config.services.faasd;
 
@@ -12,7 +13,7 @@ let
     , maxInflight ? 1
     , writeDebug ? false
     }: {
-      image = "ghcr.io/openfaas/queue-worker:0.13.3";
+      image = "${queue-worker.imageName}:${queue-worker.finalImageTag}";
       imageFile = mkIf cfg.seedCoreImages pkgs.openfaas-images.queue-worker;
       environment = {
         faas_nats_address = "nats";
