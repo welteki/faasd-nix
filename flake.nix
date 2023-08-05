@@ -27,11 +27,11 @@
         {
           gateway = {
             name = "ghcr.io/openfaas/gateway";
-            tag = "0.26.4";
+            tag = "0.27.0";
           };
           queue-worker = {
             name = "ghcr.io/openfaas/queue-worker";
-            tag = "0.13.3";
+            tag = "0.14.0";
           };
           nats = {
             name = "docker.io/library/nats-streaming";
@@ -39,7 +39,7 @@
           };
           prometheus = {
             name = "docker.io/prom/prometheus";
-            tag = "v2.45.0";
+            tag = "v2.46.0";
           };
         };
 
