@@ -3,16 +3,16 @@
     "faasd-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1688733936,
-        "narHash": "sha256-/78fCqiJ8KXIu8whz8CARnwTLuxmfcCR8jIkmgP4pUI=",
+        "lastModified": 1690446385,
+        "narHash": "sha256-x3uJWBVyDMBDns3fPQsp+gpkNMEsH98vy01muzgKP+Y=",
         "owner": "openfaas",
         "repo": "faasd",
-        "rev": "57baf34f5ac06ce19aedccb047811cb5bd2aba60",
+        "rev": "53670e285466b60e24e9d0ade60e5fd5430d978e",
         "type": "github"
       },
       "original": {
         "owner": "openfaas",
-        "ref": "0.17.0",
+        "ref": "0.18.0",
         "repo": "faasd",
         "type": "github"
       }
@@ -55,11 +55,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1689503327,
-        "narHash": "sha256-qVwzYLA8oT2oWNDXO0A3bZHOhoPOihIB9T677+Hor1E=",
+        "lastModified": 1691155011,
+        "narHash": "sha256-O15tC0ysw+fcacEbOzrDrkVNIR+SgtArSGvpgsEqpvA=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "f64b9738da8e86195766147e9752c67fccee006c",
+        "rev": "9652a97d9738d3e65cf33c0bc24429e495a7868f",
         "type": "github"
       },
       "original": {
