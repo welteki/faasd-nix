@@ -4,7 +4,7 @@ let
   inherit (types) listOf nullOr attrsOf str either int bool submodule package;
 
   link = url: text:
-    ''link:${url}[${text}]'';
+    ''link: [${text}](${url})'';
   dockerComposeRef = fragment:
     ''See ${link "https://github.com/compose-spec/compose-spec/blob/master/spec.md?/#${fragment}" "Compose Specification#${fragment}"}'';
 in
@@ -13,6 +13,7 @@ in
     out = mkOption {
       type = attrsOf types.unspecified;
       readOnly = true;
+      internal = true;
     };
 
     image = mkOption {

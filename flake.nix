@@ -259,6 +259,7 @@
 
           prefetch-images = pkgs.prefetch-images;
           faasd-test = self.checks.${system}.faasd;
+          options-doc = import ./pkgs/options-doc.nix pkgs;
         };
 
         devShells.faasd-vm = pkgs.mkShell {
