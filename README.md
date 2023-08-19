@@ -2,10 +2,6 @@
 
 Run serverless functions on NixOS using [faasd](https://github.com/openfaas/faasd) - a lightweight & portable faas engine.
 
-> 🛠 **Status: Experimental**
->
-> This project is currently in development.
-
 If you are new to [faasd](https://github.com/openfaas/faasd) and [OpenFaaS](https://github.com/openfaas/) checkout the following resources to get started:
 
 - [The faasd README](https://github.com/openfaas/faasd#readme)
