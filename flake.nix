@@ -146,6 +146,7 @@
           };
 
           prefetch-images = import ./scripts/prefetch-images.nix images final;
+          faasd-options-doc = import ./pkgs/options-doc.nix final;
 
           openfaas-images = {
             gateway = pullImage image-parameters.gateway;
@@ -259,7 +260,7 @@
 
           prefetch-images = pkgs.prefetch-images;
           faasd-test = self.checks.${system}.faasd;
-          options-doc = import ./pkgs/options-doc.nix pkgs;
+          gen-options-doc = import ./scripts/gen-options-doc.nix pkgs;
         };
 
         devShells.faasd-vm = pkgs.mkShell {
