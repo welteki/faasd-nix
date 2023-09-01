@@ -2,7 +2,7 @@ name: 'Build and push to cachix'
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   cachix-push:
     runs-on: ubuntu-latest
