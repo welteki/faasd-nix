@@ -1,4 +1,4 @@
-name: 'Build an push to cachix'
+name: 'Build and push to cachix'
 on:
   push:
     branches:
