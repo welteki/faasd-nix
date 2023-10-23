@@ -273,7 +273,11 @@
             pkgs.nixos-shell
             pkgs.faas-cli
 
-            pkgs.nixpkgs-fmt
+            pkgs.cachix
+            pkgs.statix
+            pkgs.vulnix
+            pkgs.deadnix
+            pkgs.nil
           ];
         };
       });
