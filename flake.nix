@@ -4,8 +4,6 @@
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-23.05";
     utils.url = "github:numtide/flake-utils";
-    flake-compat.url = "github:edolstra/flake-compat";
-    flake-compat.flake = false;
     faasd-src = {
       url = "github:openfaas/faasd?ref=0.18.2";
       flake = false;
