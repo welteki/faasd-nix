@@ -28,3 +28,5 @@ jobs:
             .#queue-worker-image \
             .#nats-image \
             .#prometheus-image
+      - name: Check flake
+        run: nix flake check -L --accept-flake-config
