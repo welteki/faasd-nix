@@ -3,16 +3,16 @@
     "faasd-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1698055082,
-        "narHash": "sha256-hihgQzZFwF9ZGLem5nrYFrs5kUGcbuCrmz2c774Aizs=",
+        "lastModified": 1702310896,
+        "narHash": "sha256-1uNru91HX8GK0G6R5EzktNIvzso5wkNhNM613T8GJqw=",
         "owner": "openfaas",
         "repo": "faasd",
-        "rev": "078043b168d8e18fa2671de9cc1f9aca27d4e9ba",
+        "rev": "f17a25f3e81dc2f17fb0673f4c8e4d6981781966",
         "type": "github"
       },
       "original": {
         "owner": "openfaas",
-        "ref": "0.18.2",
+        "ref": "0.18.3",
         "repo": "faasd",
         "type": "github"
       }
@@ -24,11 +24,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1686216465,
-        "narHash": "sha256-0A4K6xVIyxUi2YZu4+156WwzAO1GDWGcKiMvsXpBQDQ=",
+        "lastModified": 1698737528,
+        "narHash": "sha256-65qiCQPFGCpdjcfQrO1EZKe+LFD0tzmlecFOACNwMbY=",
         "owner": "Mic92",
         "repo": "nixos-shell",
-        "rev": "65489e7eeef8eeea43e1e4218ad1b99d58852c7c",
+        "rev": "8a835e240adc32e68d6fc7ca5aaf3f597de08d5f",
         "type": "github"
       },
       "original": {
@@ -80,11 +80,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1694529238,
-        "narHash": "sha256-zsNZZGTGnMOf9YpHKJqMSsa0dXbfmxeoJ7xHlrt+xmY=",
+        "lastModified": 1701680307,
+        "narHash": "sha256-kAuep2h5ajznlPMD9rnQyffWG8EM/C73lejGofXvdM8=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "ff7b65b44d01cf9ba6a71320833626af21126384",
+        "rev": "4022d587cbbfd70fe950c1e2083a02621806a725",
         "type": "github"
       },
       "original": {

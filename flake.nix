@@ -5,7 +5,7 @@
     nixpkgs.url = "nixpkgs/nixos-23.11";
     utils.url = "github:numtide/flake-utils";
     faasd-src = {
-      url = "github:openfaas/faasd?ref=0.18.2";
+      url = "github:openfaas/faasd?ref=0.18.3";
       flake = false;
     };
     nixos-shell.url = "github:Mic92/nixos-shell";
@@ -25,19 +25,19 @@
         {
           gateway = {
             name = "ghcr.io/openfaas/gateway";
-            tag = "0.27.2";
+            tag = "0.27.3";
           };
           queue-worker = {
             name = "ghcr.io/openfaas/queue-worker";
-            tag = "0.14.0";
+            tag = "0.14.1";
           };
           nats = {
             name = "docker.io/library/nats-streaming";
-            tag = "0.25.5";
+            tag = "0.25.6";
           };
           prometheus = {
             name = "docker.io/prom/prometheus";
-            tag = "v2.47.0";
+            tag = "v2.48.1";
           };
         };
 
@@ -63,11 +63,8 @@
       overlays.default = final: prev:
         let
           inherit (final)
-            lib
             buildGoModule
             fetchFromGitHub
-            makeWrapper
-            iptables
             dockerTools;
 
           inherit (dockerTools) pullImage;

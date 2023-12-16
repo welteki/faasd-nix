@@ -1,30 +1,30 @@
 {
   gateway = {
     imageName = "ghcr.io/openfaas/gateway";
-    imageDigest = "sha256:82c69e33a2db3d9b3a8bced0e1ee4833bb4277a71097df843741f9540cee343a";
-    sha256 = "1wm3jk4lqzfnlmfrgy4cl2wkix6l9lymvygzk60yy022x03gh5cq";
+    imageDigest = "sha256:f95ee4260457bbaef68113a95b2c2aa75e33c526f618e35fd5104e16db7b195e";
+    sha256 = "1i32zg6g0x3dpvxjhhpjwa68viz1lgjaszzgnwjl8byq3a1hybdw";
     finalImageName = "ghcr.io/openfaas/gateway";
-    finalImageTag = "0.27.2";
+    finalImageTag = "0.27.3";
   };
   queue-worker = {
     imageName = "ghcr.io/openfaas/queue-worker";
-    imageDigest = "sha256:cd577d1c6f9100da102692cc3a034a5d5b3a6d313212e93508e27e3079b42b65";
-    sha256 = "1hdgi5yysj67xx72kfiqdm5pvmx1h2vzq3dgl8201skp8xywii1j";
+    imageDigest = "sha256:978ed61fa5dbfb90b6fd00bdbf15965d03d49d7d5d720a653d1c180ca7740162";
+    sha256 = "0chm5rzz1hc4fhhmfbwjqa1c8mhdg0mf7i4pfbqas4hhv1bvyn89";
     finalImageName = "ghcr.io/openfaas/queue-worker";
-    finalImageTag = "0.14.0";
+    finalImageTag = "0.14.1";
   };
   nats = {
     imageName = "docker.io/library/nats-streaming";
-    imageDigest = "sha256:030bf2dd73eac06ff3da645f64c39759268568e6436ce85a61b56da93060a96b";
-    sha256 = "0ak4nvi86i88rvs4xjc3nwf0gyj6hkhwlz69virh024qlk135l0q";
+    imageDigest = "sha256:3d397227da27f6733a3072f91500de922cfaadb5755455a05a366504d86fd19a";
+    sha256 = "13d5m5fyyqjqbq96f5q7rlnqbkqsl8fmz9q5fdqps2gz67bkdz5g";
     finalImageName = "docker.io/library/nats-streaming";
-    finalImageTag = "0.25.5";
+    finalImageTag = "0.25.6";
   };
   prometheus = {
     imageName = "docker.io/prom/prometheus";
-    imageDigest = "sha256:c5dd3503828713c4949ae1bccd1d8d69f382c33d441954674a6b78ebe69c3331";
-    sha256 = "0bhgq9idmlhcg3f8zg9ayxafqw5vibgyw6apbqb31jv4lfx829p4";
+    imageDigest = "sha256:a67e5e402ff5410b86ec48b39eab1a3c4df2a7e78a71bf025ec5e32e09090ad4";
+    sha256 = "003l9lf0f6d1bd06vp02jya6hph2bf5a43qiyd6p3xmaxialyph5";
     finalImageName = "docker.io/prom/prometheus";
-    finalImageTag = "v2.47.0";
+    finalImageTag = "v2.48.1";
   };
 }
