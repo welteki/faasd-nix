@@ -1,10 +1,10 @@
 {
   gateway = {
     imageName = "ghcr.io/openfaas/gateway";
-    imageDigest = "sha256:f95ee4260457bbaef68113a95b2c2aa75e33c526f618e35fd5104e16db7b195e";
-    sha256 = "1i32zg6g0x3dpvxjhhpjwa68viz1lgjaszzgnwjl8byq3a1hybdw";
+    imageDigest = "sha256:a0814d6ede0a8a5fadb5b7e71f3fbfafef1d7a5f6e814babedfd24353a71641b";
+    sha256 = "1i33f66zxbqhbjcpps5sha6zyhd705gpl0xabjpjayqybv6m96r0";
     finalImageName = "ghcr.io/openfaas/gateway";
-    finalImageTag = "0.27.3";
+    finalImageTag = "0.27.5";
   };
   queue-worker = {
     imageName = "ghcr.io/openfaas/queue-worker";
@@ -15,16 +15,16 @@
   };
   nats = {
     imageName = "docker.io/library/nats-streaming";
-    imageDigest = "sha256:3d397227da27f6733a3072f91500de922cfaadb5755455a05a366504d86fd19a";
+    imageDigest = "sha256:d3175589326bc542cdc97ec4900237e1b603492994037e2e0451fb86de40bfb0";
     sha256 = "13d5m5fyyqjqbq96f5q7rlnqbkqsl8fmz9q5fdqps2gz67bkdz5g";
     finalImageName = "docker.io/library/nats-streaming";
     finalImageTag = "0.25.6";
   };
   prometheus = {
     imageName = "docker.io/prom/prometheus";
-    imageDigest = "sha256:a67e5e402ff5410b86ec48b39eab1a3c4df2a7e78a71bf025ec5e32e09090ad4";
-    sha256 = "003l9lf0f6d1bd06vp02jya6hph2bf5a43qiyd6p3xmaxialyph5";
+    imageDigest = "sha256:beb5e30ffba08d9ae8a7961b9a2145fc8af6296ff2a4f463df7cd722fcbfc789";
+    sha256 = "0gp3y00vq7mr1w8jlda345886nvf6m4xvp06zk83pxzxm9glv5xh";
     finalImageName = "docker.io/prom/prometheus";
-    finalImageTag = "v2.48.1";
+    finalImageTag = "v2.49.1";
   };
 }

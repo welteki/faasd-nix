@@ -5,7 +5,7 @@
     nixpkgs.url = "nixpkgs/nixos-23.11";
     utils.url = "github:numtide/flake-utils";
     faasd-src = {
-      url = "github:openfaas/faasd?ref=0.18.3";
+      url = "github:openfaas/faasd?ref=0.18.6";
       flake = false;
     };
     nixos-shell.url = "github:Mic92/nixos-shell";
@@ -25,7 +25,7 @@
         {
           gateway = {
             name = "ghcr.io/openfaas/gateway";
-            tag = "0.27.3";
+            tag = "0.27.5";
           };
           queue-worker = {
             name = "ghcr.io/openfaas/queue-worker";
@@ -37,7 +37,7 @@
           };
           prometheus = {
             name = "docker.io/prom/prometheus";
-            tag = "v2.48.1";
+            tag = "v2.49.1";
           };
         };
 
