@@ -5,7 +5,7 @@
     nixpkgs.url = "nixpkgs/nixos-24.05";
     utils.url = "github:numtide/flake-utils";
     faasd-src = {
-      url = "github:openfaas/faasd?ref=0.18.6";
+      url = "github:openfaas/faasd?ref=0.19.0";
       flake = false;
     };
     nixos-shell.url = "github:Mic92/nixos-shell";
@@ -72,7 +72,7 @@
         in
         {
           faasd-containerd = prev.containerd.overrideAttrs (old: rec {
-            version = "1.7.0";
+            version = "1.7.18";
 
             src = fetchFromGitHub {
               owner = "containerd";
