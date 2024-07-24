@@ -2,7 +2,7 @@
   description = "A lightweight & portable faas engine";
 
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-23.11";
+    nixpkgs.url = "nixpkgs/nixos-24.05";
     utils.url = "github:numtide/flake-utils";
     faasd-src = {
       url = "github:openfaas/faasd?ref=0.18.6";
